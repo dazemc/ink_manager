@@ -68,18 +68,21 @@ def test() -> str:
 
 @app.route("/", methods=["GET"])
 def display_text() -> str:
-    text = str(request.args["text"])
-    color = '#' + str(request.args["color"])
-    pos = tuple([int(i) for i in str(request.args["pos"]).split(',')])
-    size = int(request.args["size"])
-    logging.info("Displaying text: %s", text)
-    logging.info("Displaying color: %s", color)
-    logging.info("Displaying position: %s", pos)
-    logging.info("Displaying size: %s", pos)
-    draw_image = ink.blank_image()
-    draw = ink.draw(draw_image)
-    ink.draw_text(pos, text=text, font=font, size=size, color=color, draw=draw)
-    ink.display_draw(draw_image)
+    try:
+        text = str(request.args["text"])
+        color = "#" + str(request.args["color"])
+        pos = tuple([int(i) for i in str(request.args["pos"]).split(",")])
+        size = int(request.args["size"])
+        logging.info("Displaying text: %s", text)
+        logging.info("Displaying color: %s", color)
+        logging.info("Displaying position: %s", pos)
+        logging.info("Displaying size: %s", pos)
+        draw_image = ink.blank_image()
+        draw = ink.draw(draw_image)
+        ink.draw_text(pos, text=text, font=font, size=size, color=color, draw=draw)
+        ink.display_draw(draw_image)
+    except IOError as e:
+        return logging.info(e)
     return "Success"
 
 
