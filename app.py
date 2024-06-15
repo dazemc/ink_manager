@@ -1,6 +1,6 @@
 # import subprocess
 # import json
-# import time
+import time
 from flask import Flask, request
 from flask_cors import CORS
 import ink_display as ink
@@ -13,16 +13,19 @@ ink = ink.InkDisplay()
 image = "zelda00.bmp"
 font = "Font.ttc"
 
+ink.init()
+
 
 @app.route("/test", methods=["GET"])
-def test() -> None:
+def test() -> str:
     try:
         # INIT/CLEAR
-        ink.init()
+        # ink.init()
         ink.clear()
 
         # DISPLAY IMAGE
         ink.display_image(image)
+        time.sleep(5)
         ink.clear()
 
         # CREATE DRAW
@@ -37,6 +40,7 @@ def test() -> None:
         logging.info("drawing draw image")
         draw.line([(5, 170), (80, 245)], fill="#0000FF")
         ink.display_draw(draw_image)
+        time.sleep(5)
         ink.clear()
 
         # CREATE NEW DRAW
@@ -51,6 +55,7 @@ def test() -> None:
             draw=draw,
         )
         ink.display_draw(draw_image)
+        time.sleep(5)
         ink.clear()
 
         # SLEEP
@@ -58,6 +63,19 @@ def test() -> None:
 
     except IOError as e:
         logging.info(e)
+    return "Success"
+
+
+@app.route("/", methods=["GET"])
+def display_text() -> str:
+    text = str(request.args["text"])
+    draw_image = ink.blank_image()
+    draw = ink.draw(draw_image)
+    ink.draw_text((5, 0), text=text, font=font, size=24, color="#FF0000", draw=draw)
+    # ink.draw_text((5, 30), text="world", font=font, size=16, color="#FF0000", draw=draw)
+    logging.info(f"Displaying text: {text}")
+    draw.line([(5, 170), (80, 245)], fill="#0000FF")
+    ink.display_draw(draw_image)
     return "Success"
 
 
