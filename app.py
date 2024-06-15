@@ -70,11 +70,13 @@ def test() -> str:
 def display_text() -> str:
     text = str(request.args["text"])
     color = '#' + str(request.args["color"])
+    pos = tuple([int(i) for i in str(request.args["pos"]).split(',')])
     logging.info("Displaying text: %s", text)
     logging.info("Displaying color: %s", color)
+    logging.info("Displaying color: %s", str(pos))
     draw_image = ink.blank_image()
     draw = ink.draw(draw_image)
-    ink.draw_text((5, 0), text=text, font=font, size=24, color=color, draw=draw)
+    ink.draw_text(pos, text=text, font=font, size=24, color=color, draw=draw)
     ink.display_draw(draw_image)
     return "Success"
 
