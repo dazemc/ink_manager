@@ -14,7 +14,7 @@ image = "zelda00.bmp"
 font = "Font.ttc"
 
 
-@app.route("/", methods=["GET"])
+@app.route("/test", methods=["GET"])
 def test() -> None:
     try:
         # INIT/CLEAR
@@ -58,6 +58,7 @@ def test() -> None:
 
     except IOError as e:
         logging.info(e)
+    return "Success"
 
 
 # @app.route("/send_creds", methods=["POST"])
