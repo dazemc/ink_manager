@@ -75,7 +75,7 @@ def display_text() -> str:
     draw_image = ink.blank_image()
     draw = ink.draw(draw_image)
     ink.draw_text((5, 0), text=text, font=font, size=24, color=color, draw=draw)
-    # ink.draw_text((5, 30), text="world", font=font, size=16, color="#FF0000", draw=draw)
+    ink.display_draw(draw_image)
     return "Success"
 
 
