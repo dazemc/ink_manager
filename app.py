@@ -73,7 +73,7 @@ def display_text() -> str:
     pos = tuple([int(i) for i in str(request.args["pos"]).split(',')])
     logging.info("Displaying text: %s", text)
     logging.info("Displaying color: %s", color)
-    logging.info("Displaying color: %s", str(pos))
+    logging.info("Displaying color: %s", pos)
     draw_image = ink.blank_image()
     draw = ink.draw(draw_image)
     ink.draw_text(pos, text=text, font=font, size=24, color=color, draw=draw)
