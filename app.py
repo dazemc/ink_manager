@@ -29,8 +29,8 @@ def test() -> str:
         ink.clear()
 
         # CREATE DRAW
-        draw_image = ink.blank_image()
-        draw = ink.draw(draw_image)
+        ink.draw_image = ink.blank_image()
+        draw = ink.draw(ink.draw_image)
         ink.draw_text(
             (5, 0), text="hello", font=font, size=24, color="#FF0000", draw=draw
         )
@@ -39,13 +39,13 @@ def test() -> str:
         )
         logging.info("drawing draw image")
         draw.line([(5, 170), (80, 245)], fill="#0000FF")
-        ink.display_draw(draw_image)
+        ink.display_draw(ink.draw_image)
         time.sleep(5)
         ink.clear()
 
         # CREATE NEW DRAW
-        draw_image = ink.blank_image()
-        draw = ink.draw(draw_image)
+        ink.draw_image = ink.blank_image()
+        draw = ink.draw(ink.draw_image)
         ink.draw_text(
             (5, 0),
             text="goodbye world",
@@ -54,7 +54,7 @@ def test() -> str:
             color="#00FF00",
             draw=draw,
         )
-        ink.display_draw(draw_image)
+        ink.display_draw(ink.draw_image)
         time.sleep(5)
         ink.clear()
 
@@ -68,15 +68,19 @@ def test() -> str:
 
 @app.route("/text", methods=["GET"])
 def display_text() -> str:
+    """Creates text on an image
+
+    Returns:
+        str: "Success"
+    """
     try:
-        ink.init()
         text = str(request.args["text"])
         color = "#" + str(request.args["color"])
         pos = tuple([int(i) for i in str(request.args["pos"]).split(",")])
         size = int(request.args["size"])
         center = str(request.args["center"]).lower()
         if center != "false":
-            px = size/72 * 96
+            px = size / 72 * 96
             px_total = len(text) * px
             pos = (pos[0] - px_total / 4, pos[1] - px / 2.66)
         if DEBUG:
@@ -85,25 +89,38 @@ def display_text() -> str:
             logging.info("Displaying position: %s", pos)
             logging.info("Displaying size: %s", size)
             logging.info("Displaying center: %s", center)
-        draw_image = ink.blank_image()
-        draw = ink.draw(draw_image)
+        # draw_image = ink.blank_image()
+        draw = ink.draw(ink.draw_image)
         ink.draw_text(pos, text=text, font=font, size=size, color=color, draw=draw)
-        ink.display_draw(draw_image)
-        ink.sleep()
+        # ink.display_draw(ink.draw_image)
     except IOError as e:
         return logging.info(e)
     return "Success"
 
 
-
-@app.route("/image", methods=["GET", "POST"])
-def display_image() -> str:
+@app.route("/display", methods=["GET"])
+def display() -> str:
     ink.init()
-    if DEBUG:
-        logging.info("Displaying image: %s", image)
-    ink.display_image(image)
+    ink.display_draw(ink.draw_image)
     ink.sleep()
     return "Success"
+
+
+@app.route("/reset", methods=["GET"])
+def reset() -> str:
+    ink.draw_image = ink.blank_image()
+    return "Success"
+
+@app.route("/test_image", methods=["GET", "POST"])
+def display_image() -> str:
+    ink.init()
+    if request.method == "GET":
+        if DEBUG:
+            logging.info("Displaying image: %s", image)
+        ink.display_image(image)
+        ink.sleep()
+    return "Success"
+
 
 @app.route("/clear", methods=["GET"])
 def clear() -> str:
