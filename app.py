@@ -74,6 +74,11 @@ def display_text() -> str:
         color = "#" + str(request.args["color"])
         pos = tuple([int(i) for i in str(request.args["pos"]).split(",")])
         size = int(request.args["size"])
+        center = bool(request.args["center"])
+        if center:
+            px = size/72 * 96
+            px_total = len(text) * px
+            pos = (pos[0] - px_total / 2, pos[1] - px_total / 2)
         if DEBUG:
             logging.info("Displaying text: %s", text)
             logging.info("Displaying color: %s", color)
