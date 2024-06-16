@@ -78,13 +78,12 @@ def display_text() -> str:
         if center:
             px = size/72 * 96
             px_total = len(text) * px
-            pos = (pos[0] - px_total / 3.66, pos[1] - px / 1.66)
+            pos = (pos[0] - px_total / 4, pos[1] - px / 2.66)
         if DEBUG:
             logging.info("Displaying text: %s", text)
             logging.info("Displaying color: %s", color)
             logging.info("Displaying position: %s", pos)
-            logging.info("Displaying size: %s", pos)
-            logging.info("Displaying size: %s", pos)
+            logging.info("Displaying size: %s", size)
         draw_image = ink.blank_image()
         draw = ink.draw(draw_image)
         ink.draw_text(pos, text=text, font=font, size=size, color=color, draw=draw)
