@@ -13,7 +13,6 @@ ink = ink.InkDisplay()
 image = "zelda00.bmp"
 font = "Font.ttc"
 
-ink.init()
 DEBUG = True
 
 
@@ -21,7 +20,7 @@ DEBUG = True
 def test() -> str:
     try:
         # INIT/CLEAR
-        # ink.init()
+        ink.init()
         ink.clear()
 
         # DISPLAY IMAGE
@@ -70,6 +69,7 @@ def test() -> str:
 @app.route("/text", methods=["GET"])
 def display_text() -> str:
     try:
+        ink.init()
         text = str(request.args["text"])
         color = "#" + str(request.args["color"])
         pos = tuple([int(i) for i in str(request.args["pos"]).split(",")])
@@ -98,6 +98,7 @@ def display_text() -> str:
 
 @app.route("/image", methods=["GET", "POST"])
 def display_image() -> str:
+    ink.init()
     if DEBUG:
         logging.info("Displaying image: %s", image)
     ink.display_image(image)
@@ -106,6 +107,7 @@ def display_image() -> str:
 
 @app.route("/clear", methods=["GET"])
 def clear() -> str:
+    ink.init()
     ink.clear()
     ink.sleep()
     return "Success"
