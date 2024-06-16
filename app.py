@@ -74,8 +74,8 @@ def display_text() -> str:
         color = "#" + str(request.args["color"])
         pos = tuple([int(i) for i in str(request.args["pos"]).split(",")])
         size = int(request.args["size"])
-        center = bool(request.args["center"])
-        if center:
+        center = str(request.args["center"]).lower()
+        if center is not "false":
             px = size/72 * 96
             px_total = len(text) * px
             pos = (pos[0] - px_total / 4, pos[1] - px / 2.66)
@@ -84,6 +84,7 @@ def display_text() -> str:
             logging.info("Displaying color: %s", color)
             logging.info("Displaying position: %s", pos)
             logging.info("Displaying size: %s", size)
+            logging.info("Displaying center: %s", center)
         draw_image = ink.blank_image()
         draw = ink.draw(draw_image)
         ink.draw_text(pos, text=text, font=font, size=size, color=color, draw=draw)
