@@ -14,6 +14,7 @@ image = "zelda00.bmp"
 font = "Font.ttc"
 
 ink.init()
+DEBUG = True
 
 
 @app.route("/test", methods=["GET"])
@@ -66,17 +67,21 @@ def test() -> str:
     return "Success"
 
 
-@app.route("/", methods=["GET"])
+@app.route("/text", methods=["GET"])
 def display_text() -> str:
     try:
         text = str(request.args["text"])
         color = "#" + str(request.args["color"])
         pos = tuple([int(i) for i in str(request.args["pos"]).split(",")])
         size = int(request.args["size"])
-        logging.info("Displaying text: %s", text)
-        logging.info("Displaying color: %s", color)
-        logging.info("Displaying position: %s", pos)
-        logging.info("Displaying size: %s", pos)
+        if DEBUG:
+            yield (
+            logging.info("Displaying text: %s", text),
+            logging.info("Displaying color: %s", color),
+            logging.info("Displaying position: %s", pos),
+            logging.info("Displaying size: %s", pos),
+            logging.info("Displaying size: %s", pos),
+            )
         draw_image = ink.blank_image()
         draw = ink.draw(draw_image)
         ink.draw_text(pos, text=text, font=font, size=size, color=color, draw=draw)
@@ -85,6 +90,14 @@ def display_text() -> str:
         return logging.info(e)
     return "Success"
 
+
+
+@app.route("/image", methods=["GET", "POST"])
+def display_image() -> str:
+    if DEBUG:
+        logging.info("Displaying image: %s", image)
+    ink.display_image(image)
+    return "Success"
 
 @app.route("/clear", methods=["GET"])
 def clear() -> str:
