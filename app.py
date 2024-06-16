@@ -60,6 +60,7 @@ def test() -> str:
 
         # SLEEP
         ink.sleep()
+        reset()
 
     except IOError as e:
         logging.info(e)
