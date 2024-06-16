@@ -84,6 +84,7 @@ def display_text() -> str:
         draw = ink.draw(draw_image)
         ink.draw_text(pos, text=text, font=font, size=size, color=color, draw=draw)
         ink.display_draw(draw_image)
+        ink.sleep()
     except IOError as e:
         return logging.info(e)
     return "Success"
@@ -95,11 +96,13 @@ def display_image() -> str:
     if DEBUG:
         logging.info("Displaying image: %s", image)
     ink.display_image(image)
+    ink.sleep()
     return "Success"
 
 @app.route("/clear", methods=["GET"])
 def clear() -> str:
     ink.clear()
+    ink.sleep()
     return "Success"
 
 
