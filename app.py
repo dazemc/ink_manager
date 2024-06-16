@@ -75,7 +75,7 @@ def display_text() -> str:
         pos = tuple([int(i) for i in str(request.args["pos"]).split(",")])
         size = int(request.args["size"])
         center = str(request.args["center"]).lower()
-        if center is not "false":
+        if center != "false":
             px = size/72 * 96
             px_total = len(text) * px
             pos = (pos[0] - px_total / 4, pos[1] - px / 2.66)
