@@ -122,7 +122,7 @@ def display_image() -> str:
             logging.info("Displaying image: %s", image)
     if request.method == "POST":
         r = request.files.get("image")
-        logging.info(r)
+        logging.info(r[0])
         post_image = Image.open(r)
         # save_loc = f"{cwd}/tmp/{img_name}"
         # post_image.save(save_loc)
