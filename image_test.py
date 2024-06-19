@@ -1,6 +1,8 @@
 import requests
+import os
 
-image = '/assets/images/zelda02.bmp'
+cwd = os.getcwd()
+image = cwd + '/assets/images/zelda02.bmp'
 
 with open(image, "rb") as f:
     img_data = f.read()

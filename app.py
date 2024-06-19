@@ -120,9 +120,9 @@ def display_image() -> str:
             logging.info("Displaying image: %s", image)
     if request.method == "POST":
         r = request.files["image"]
-        image = Image.open(r[1])
+        image = Image.open(r)
         if DEBUG:
-            logging.info("Displaying image from POST: %s", r[0])
+            logging.info("Displaying image from POST")
     ink.display_image(image)
     ink.sleep()
 
