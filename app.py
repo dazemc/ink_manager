@@ -1,4 +1,5 @@
 import time
+import os
 from flask import Flask, request
 from flask_cors import CORS
 import ink_display as ink
@@ -9,6 +10,7 @@ app = Flask(__name__)
 CORS(app)
 logging.basicConfig(level=logging.DEBUG)
 ink = ink.InkDisplay()
+cwd = os.getcwd()
 image = "zelda00.bmp"
 font = "Font.ttc"
 
@@ -119,8 +121,11 @@ def display_image() -> str:
         if DEBUG:
             logging.info("Displaying image: %s", image)
     if request.method == "POST":
+        img_name = request.form["image"][0]
+        logging.info("POST image name: %s", img_name)
         r = request.files["image"]
         image = Image.open(r)
+        image.save(f"{cwd}/tmp/{img_name}")
         if DEBUG:
             logging.info("Displaying image from POST")
     ink.display_image(image)
