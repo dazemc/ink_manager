@@ -117,19 +117,19 @@ def reset() -> str:
 @app.route("/test_image", methods=["GET", "POST"])
 def display_image() -> str:
     ink.init()
+    ink.clear()
     if request.method == "GET":
         if DEBUG:
             logging.info("Displaying image: %s", image)
     if request.method == "POST":
         r = request.files["image"]
         image_name = r.filename
-        logging.info(r)
         post_image = Image.open(r)
         save_loc = f"{cwd}/tmp/{image_name}"
         post_image.save(save_loc)
         image = save_loc
         if DEBUG:
-            logging.info("Displaying image from POST")
+            logging.info("Displaying image from POST: %s", image_name)
     ink.display_image(image)
     ink.sleep()
 
