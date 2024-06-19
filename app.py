@@ -11,7 +11,7 @@ CORS(app)
 logging.basicConfig(level=logging.DEBUG)
 ink = ink.InkDisplay()
 cwd = os.getcwd()
-image = "zelda00.bmp"
+image = r"/assets/images/test/raspilogo.bmp"
 font = "Font.ttc"
 
 DEBUG = True
@@ -125,7 +125,9 @@ def display_test_image() -> str:
         r = request.files["image"]
         image_name = r.filename
         post_image = Image.open(r)
-        save_loc = f"{cwd}/upload/{image_name}"
+        save_loc = f"{cwd}/assets/images/upload/{image_name}"
+        if os.path.exists(save_loc):
+            os.remove(save_loc)
         post_image.save(save_loc)
         image = save_loc
         if DEBUG:
