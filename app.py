@@ -1,10 +1,9 @@
-# import subprocess
-# import json
 import time
 from flask import Flask, request
 from flask_cors import CORS
 import ink_display as ink
 import logging
+from PIL import Image
 
 app = Flask(__name__)
 CORS(app)
@@ -112,14 +111,21 @@ def reset() -> str:
     ink.draw_image = ink.blank_image()
     return "Success"
 
+
 @app.route("/test_image", methods=["GET", "POST"])
 def display_image() -> str:
     ink.init()
     if request.method == "GET":
         if DEBUG:
             logging.info("Displaying image: %s", image)
-        ink.display_image(image)
-        ink.sleep()
+    if request.method == "POST":
+        r = request.files["image"]
+        image = Image.open(r[1])
+        if DEBUG:
+            logging.info("Displaying image from POST: %s", r[0])
+    ink.display_image(image)
+    ink.sleep()
+
     return "Success"
 
 
@@ -129,21 +135,6 @@ def clear() -> str:
     ink.clear()
     ink.sleep()
     return "Success"
-
-
-# @app.route("/send_creds", methods=["POST"])
-# def save_credentials() -> str:
-#     if request.method == "POST":
-#         r = json.loads(request.data)
-#         time.sleep(3)
-#         if connect_wifi(r["SSID"], r["PASS"]):
-#             if DEBUG_HOTSPOT:
-#                 enable_hotspot()
-#             # will not be able to return because wifi connection gets lost, will send it with credentials instead
-#             # return {"local_ip": get_local_ip()}
-#             return "Connected"
-#         return "Error connecting"
-#     return "Not a POST method"
 
 
 if __name__ == "__main__":
