@@ -121,13 +121,12 @@ def display_image() -> str:
         if DEBUG:
             logging.info("Displaying image: %s", image)
     if request.method == "POST":
-        img_name = request.form["image"]["image_name"]
-        logging.info("POST image name: %s", img_name)
-        r = request.files["image"]["image_data"]
+        r = request.files.get("image")
+        logging.info(r)
         post_image = Image.open(r)
-        save_loc = f"{cwd}/tmp/{img_name}"
-        post_image.save(save_loc)
-        image = save_loc
+        # save_loc = f"{cwd}/tmp/{img_name}"
+        # post_image.save(save_loc)
+        # image = save_loc
         if DEBUG:
             logging.info("Displaying image from POST")
     ink.display_image(image)
