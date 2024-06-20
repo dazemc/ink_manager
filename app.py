@@ -24,8 +24,7 @@ DEBUG = True
 def test() -> str:
     try:
         # INIT/CLEAR
-        ink.init()
-        ink.clear()
+        clean(sleep=False)
 
         # DISPLAY IMAGE
         ink.display_image(image)
@@ -63,8 +62,9 @@ def test() -> str:
         ink.clear()
 
         # SLEEP
-        ink.sleep()
         reset()
+        clean(sleep=True)
+
 
     except IOError as e:
         logging.info(e)
@@ -119,8 +119,7 @@ def reset() -> str:
 
 @app.route("/test_image", methods=["GET", "POST"])
 def display_test_image() -> str:
-    ink.init()
-    ink.clear()
+    clean()
     if request.method == "GET":
         if DEBUG:
             logging.info("Displaying image: %s", image)
@@ -142,7 +141,8 @@ def display_test_image() -> str:
 
 
 @app.route("/test_weather", methods=["GET"])
-def test_weather():
+def test_weather():        
+    clean()
     coord = weather.get_coord()
     r = weather.get_weather(coord)
     weather.parse_response(r)
@@ -151,10 +151,11 @@ def test_weather():
 
 
 @app.route("/clear", methods=["GET"])
-def clear() -> str:
+def clean(sleep: bool = False) -> str:
     ink.init()
     ink.clear()
-    ink.sleep()
+    if sleep:
+        ink.sleep()
     return "Success"
 
 

@@ -15,7 +15,6 @@ SPACING = 8
 TODAY = datetime.today().strftime("%m-%d-%Y")
 
 
-
 class WeatherData:
     def __init__(self) -> None:
         self.zip = "98022"
@@ -26,7 +25,6 @@ class WeatherData:
 
     def get_icons(self) -> list:
         return [i for i in os.listdir(ICON_DIR)]
-
 
     def create_forecast(self, icon):
         pos = SPACING
@@ -43,12 +41,10 @@ class WeatherData:
                 os.remove(save_dir)
             forecast_image.save(save_dir)
 
-
     def get_coord(self) -> tuple:
         url = f"http://api.openweathermap.org/geo/1.0/zip?zip={self.zip},{self.cc}&appid={self.api}"
         resp = requests.get(url, timeout=60)
         return (resp.json()["lat"], resp.json()["lon"])
-
 
     def get_weather(self, coord):
         lat = coord[0]
@@ -56,7 +52,6 @@ class WeatherData:
         url = f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&exclude={self.exclude}&appid={self.api}&units={self.unit}"
         resp = requests.get(url, timeout=60)
         return resp.json()["daily"]
-
 
     def parse_response(self, response):
         for i in range(8):

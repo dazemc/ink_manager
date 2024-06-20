@@ -52,7 +52,7 @@ class InkDisplay:
             font=ImageFont.truetype(os.path.join(FONT_DIR, font), size),
             fill=color,
         )
-        
+
     def display_draw(self, image) -> None:
         logging.info("displaying draw image")
         self.ink.display(self.ink.getbuffer(image))
