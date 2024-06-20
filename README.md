@@ -70,7 +70,7 @@ This project provides a Flask-based server to interact with an e-ink display. It
 - **Description:** Reset the display and create a new blank image.
 - **Returns:** `"Success"` if the operation completes.
 
-### `/test_image` [GET, POST]
+### `/upload_image` [GET, POST]
 
 - **GET:** Display a test image.
 - **POST:** Upload and display an image from the request.

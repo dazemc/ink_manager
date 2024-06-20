@@ -1,5 +1,5 @@
 #!/bin/py
-# 0: busy, 1:
+# 0: busy, 1: idle
 import RPi.GPIO as GPIO
 import sys
 GPIO.setmode(GPIO.BCM)

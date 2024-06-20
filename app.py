@@ -116,8 +116,8 @@ def reset() -> str:
     return "Success"
 
 
-@app.route("/test_image", methods=["GET", "POST"])
-def display_test_image() -> str:
+@app.route("/upload_image", methods=["GET", "POST"])
+def display_upload_image() -> str:
     clean()
     if request.method == "GET":
         if DEBUG:
