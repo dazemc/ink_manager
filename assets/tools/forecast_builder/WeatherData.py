@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 import requests
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 CWD = os.getcwd()
 ICON_DIR = CWD + "/assets/images/weather_icons/"
@@ -13,6 +13,9 @@ CENTER_HEIGHT = HEIGHT / 2
 CENTER = (CENTER_WIDTH, CENTER_HEIGHT)
 SPACING = 8
 TODAY = datetime.today().strftime("%m-%d-%Y")
+FONT_SIZE = 24
+FONT = ImageFont.truetype("arial.ttf", FONT_SIZE)
+FONT_PX = FONT_SIZE / 72 * 96
 
 
 class WeatherData:
@@ -34,16 +37,34 @@ class WeatherData:
     def get_icons(self) -> list:
         return [i for i in os.listdir(ICON_DIR)]
 
+    def text_size(self, text) -> tuple:
+        canvas = Image.new("RGB", (400, 100))
+        draw = ImageDraw.Draw(canvas)
+        draw.text((10, 10), text, font=FONT, fill="white")
+        bbox = canvas.getbbox()
+        return (bbox[2] - bbox[0], bbox[3] - bbox[1])
+
     def create_forecast(self):
+        # need to break this up
         pos = SPACING
         forecast_image = Image.new("RGB", (WIDTH, HEIGHT), 0xFFFFFF)
         for day in self.response[:5]:
+            day_name = day["dt"]
+            condition = day["weather"][0]["main"].lower()
             icon_image = Image.open(
-                ICON_DIR + self.icons[day["weather"][0]["main"].lower()]
+                ICON_DIR + self.icons[condition]
             ).convert("RGBA")
             w, h = icon_image.size
+            text_w = self.text_size(day_name)[0]
             h_offset = int(CENTER_HEIGHT - h / 2)
             forecast_image.paste(icon_image, (pos, h_offset), mask=icon_image)
+            draw = ImageDraw.Draw(forecast_image)
+            draw.text(
+                (pos + text_w / 2 + SPACING * 2.5, HEIGHT / 4), day_name, font=FONT, fill="black"
+            )
+            draw.text(
+                (pos + text_w / 2 + SPACING * 2.5, CENTER_HEIGHT + h / 2), condition, font=FONT, fill="black"
+            )
             pos += SPACING + w
             forecast_image.convert("RGB")
             save_dir = FORECAST_DIR + f"forecast_{TODAY}.png"
@@ -103,6 +124,7 @@ class WeatherData:
         weatherdata.parse_response(forecast_r)
         self.response = forecast_r
 
-# wd = WeatherData()
-# wd.get_response()
-# wd.create_forecast()
+
+wd = WeatherData()
+wd.get_response()
+wd.create_forecast()
