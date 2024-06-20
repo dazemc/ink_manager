@@ -67,7 +67,7 @@ class WeatherData:
             )
             pos += SPACING + w
             forecast_image.convert("RGB")
-            save_dir = FORECAST_DIR + f"forecast_{TODAY}.png"
+            save_dir = FORECAST_DIR + "forecast.png"
             if os.path.exists(save_dir):
                 os.remove(save_dir)
             forecast_image.save(save_dir)
