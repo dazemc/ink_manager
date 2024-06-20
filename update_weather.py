@@ -11,6 +11,7 @@ cwd = os.getcwd()
 if busy == 1:
     wd = WeatherData()
     ink = InkDisplay()
+    ink.init()
     wd.get_response()
     wd.create_forecast()
     ink.display_image(cwd + "/assets/images/weather_forecast/forecast.png")
