@@ -64,7 +64,7 @@ class WeatherData:
             forecast_image.paste(icon_image, (pos, h_offset), mask=icon_image)
             draw = ImageDraw.Draw(forecast_image)
             draw.text(
-                (pos + text_w / 2 + SPACING * 2, HEIGHT / 4),
+                (pos + text_w / 2 + SPACING, HEIGHT / 4),
                 day_name,
                 font=FONT_HEADER,
                 fill="black",
