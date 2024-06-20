@@ -4,7 +4,7 @@ import os
 cwd = os.getcwd()
 image_name = "forecast2.png"
 image = cwd + f"/assets/images/test/{image_name}"
-test_url = "http://192.168.0.213/test_image"
+test_url = "http://192.168.0.213/upload_image"
 
 with open(image, "rb") as f:
     img_data = f.read()
