@@ -4,7 +4,7 @@ import requests
 import json
 from PIL import Image, ImageDraw, ImageFont
 
-DEBUG = False
+DEBUG = True
 
 CWD = os.getcwd()
 ICON_DIR = CWD + "/assets/images/weather_icons/"
@@ -16,8 +16,8 @@ CENTER_HEIGHT = HEIGHT / 2
 CENTER = (CENTER_WIDTH, CENTER_HEIGHT)
 SPACING = 8
 TODAY = datetime.today().strftime("%m-%d-%Y")
-FONT_SIZE_HEADER = 24
-FONT_SIZE_SUB = 16
+FONT_SIZE_HEADER = 28
+FONT_SIZE_SUB = 22
 FONT_HEADER = ImageFont.truetype(CWD + "/assets/fonts/Font.ttc", FONT_SIZE_HEADER)
 FONT_SUB = ImageFont.truetype(CWD + "/assets/fonts/Helvetica.ttc", FONT_SIZE_SUB)
 
@@ -70,13 +70,13 @@ class WeatherData:
                 fill="black",
             )
             draw.text(
-                (pos + text_w / 2 + SPACING * 2, CENTER_HEIGHT + h / 2 + SPACING),
+                (pos + text_w / 2 - SPACING, CENTER_HEIGHT + h / 2 + SPACING),
                 max_temp,
                 font=FONT_SUB,
                 fill="black",
             )
             draw.text(
-                (pos + text_w / 2 + SPACING * 7, CENTER_HEIGHT + h / 2 + SPACING),
+                (pos + text_w / 2 + SPACING * 6, CENTER_HEIGHT + h / 2 + SPACING),
                 min_temp,
                 font=FONT_SUB,
                 fill="gray",
