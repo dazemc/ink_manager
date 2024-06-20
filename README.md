@@ -16,7 +16,7 @@ This project provides a Flask-based server to interact with an e-ink display. It
 
     ```bash
     git clone https://github.com/dazemc/ink_manager.git
-    cd e-ink-display-server
+    cd ink_manager
     ```
 
 2. **Install dependencies:**
