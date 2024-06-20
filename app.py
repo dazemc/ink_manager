@@ -65,7 +65,6 @@ def test() -> str:
         reset()
         clean(sleep=True)
 
-
     except IOError as e:
         logging.info(e)
     return "Success"
@@ -141,12 +140,13 @@ def display_test_image() -> str:
 
 
 @app.route("/update_weather", methods=["GET"])
-def test_weather():        
+def update_weather():
     clean()
     wd.get_response()
     wd.create_forecast()
     ink.display_image(cwd + "/assets/images/weather_forecast/forecast.png")
     ink.sleep()
+    return "Success"
 
 
 @app.route("/clear", methods=["GET"])
