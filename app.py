@@ -5,6 +5,8 @@ from flask_cors import CORS
 import ink_display as ink
 import logging
 from PIL import Image
+from assets.tools.forecast_builder.WeatherData import WeatherData
+
 
 app = Flask(__name__)
 CORS(app)
@@ -13,6 +15,7 @@ ink = ink.InkDisplay()
 cwd = os.getcwd()
 image = r"/assets/images/test/raspilogo.bmp"
 font = "Font.ttc"
+weather = WeatherData()
 
 DEBUG = True
 
@@ -136,6 +139,15 @@ def display_test_image() -> str:
     ink.sleep()
 
     return "Success"
+
+
+@app.route("/test_weather", methods=["GET"])
+def test_weather():
+    coord = weather.get_coord()
+    r = weather.get_weather(coord)
+    weather.parse_response(r)
+    # weather.create_forecast(get_icons()[0])
+    return r
 
 
 @app.route("/clear", methods=["GET"])

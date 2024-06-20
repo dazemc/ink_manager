@@ -90,12 +90,3 @@ class WeatherData:
                 )
             # print(response[i]["weather"][0]["main"])
             # print(response[i]["dt"])
-
-
-weather = WeatherData()
-coord = weather.get_coord()
-r = weather.get_weather(coord)
-weather.parse_response(r)
-print(r)
-
-# weather.create_forecast(get_icons()[0])
