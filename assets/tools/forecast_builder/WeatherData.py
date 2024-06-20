@@ -14,7 +14,7 @@ CENTER = (CENTER_WIDTH, CENTER_HEIGHT)
 SPACING = 8
 TODAY = datetime.today().strftime("%m-%d-%Y")
 FONT_SIZE = 24
-FONT = ImageFont.truetype("arial.ttf", FONT_SIZE)
+FONT = ImageFont.truetype(CWD + "/assets/fonts/Font.ttc", FONT_SIZE)
 FONT_PX = FONT_SIZE / 72 * 96
 
 
