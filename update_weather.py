@@ -13,7 +13,7 @@ if busy == 1:
     ink = InkDisplay()
     wd.get_response()
     wd.create_forecast()
-    ink.display_image(cwd + "assets/images/weather_forecast/forecast.png")
+    ink.display_image(cwd + "/assets/images/weather_forecast/forecast.png")
     ink.sleep()
     print(0)
 else:
