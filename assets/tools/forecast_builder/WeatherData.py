@@ -22,15 +22,25 @@ class WeatherData:
         self.api = os.environ["OPEN_WEATHER_API"]
         self.exclude = "hourly, minutely"
         self.unit = "standard"
+        self.icons = {
+            "clouds": "cloud.png",
+            "partly_cloudy": "partly_cloudy.png",
+            "partly_rainy": "partly_rainy.png",
+            "rain": "rainy.png",
+            "clear": "sun.png",
+        }
+        self.response = {}
 
     def get_icons(self) -> list:
         return [i for i in os.listdir(ICON_DIR)]
 
-    def create_forecast(self, icon):
+    def create_forecast(self):
         pos = SPACING
         forecast_image = Image.new("RGB", (WIDTH, HEIGHT), 0xFFFFFF)
-        for _ in range(5):
-            icon_image = Image.open(ICON_DIR + icon).convert("RGBA")
+        for day in self.response[:5]:
+            icon_image = Image.open(
+                ICON_DIR + self.icons[day["weather"][0]["main"].lower()]
+            ).convert("RGBA")
             w, h = icon_image.size
             h_offset = int(CENTER_HEIGHT - h / 2)
             forecast_image.paste(icon_image, (pos, h_offset), mask=icon_image)
@@ -53,7 +63,7 @@ class WeatherData:
         resp = requests.get(url, timeout=60)
         return resp.json()["daily"]
 
-    def parse_response(self, response):
+    def parse_response(self, response) -> dict:
         for i in range(8):
             response[i]["dt"] = datetime.fromtimestamp(int(response[i]["dt"])).strftime(
                 "%m/%d"
@@ -85,3 +95,14 @@ class WeatherData:
                 )
             # print(response[i]["weather"][0]["main"])
             # print(response[i]["dt"])
+
+    def get_response(self):
+        weatherdata = WeatherData()
+        coord = weatherdata.get_coord()
+        forecast_r = weatherdata.get_weather(coord)
+        weatherdata.parse_response(forecast_r)
+        self.response = forecast_r
+
+# wd = WeatherData()
+# wd.get_response()
+# wd.create_forecast()

@@ -15,7 +15,7 @@ ink = ink.InkDisplay()
 cwd = os.getcwd()
 image = r"/assets/images/test/raspilogo.bmp"
 font = "Font.ttc"
-weather = WeatherData()
+wd = WeatherData()
 
 DEBUG = True
 
@@ -143,11 +143,8 @@ def display_test_image() -> str:
 @app.route("/test_weather", methods=["GET"])
 def test_weather():        
     clean()
-    coord = weather.get_coord()
-    r = weather.get_weather(coord)
-    weather.parse_response(r)
-    # weather.create_forecast(get_icons()[0])
-    return r
+    wd.get_response()
+    wd.create_forecast()
 
 
 @app.route("/clear", methods=["GET"])
