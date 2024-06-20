@@ -15,7 +15,7 @@ This project provides a Flask-based server to interact with an e-ink display. It
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/yourusername/e-ink-display-server.git
+    git clone https://github.com/dazemc/ink_manager.git
     cd e-ink-display-server
     ```
 
