@@ -125,6 +125,6 @@ class WeatherData:
         self.response = forecast_r
 
 
-wd = WeatherData()
-wd.get_response()
-wd.create_forecast()
+# wd = WeatherData()
+# wd.get_response()
+# wd.create_forecast()
