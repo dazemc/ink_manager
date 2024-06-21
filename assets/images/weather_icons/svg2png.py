@@ -2,7 +2,7 @@ from cairosvg import svg2png
 import os
 
 CWD = os.getcwd()
-SVG_PATH = CWD + "/light"
+SVG_PATH = CWD + "/light/"
 SVG = os.listdir(SVG_PATH)
 
 for icon in SVG:
