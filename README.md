@@ -6,7 +6,7 @@ This project provides a Flask-based server to interact with an e-ink display. It
 
 - **Display Images:** Load and display images on the e-ink display.
 - **Text Rendering:** Render text with customizable position, size, and color.
-- **Weather Updates:** Fetch and display weather forecasts.
+- **Weather Updates:** Fetch and display weather forecasts, icon tables here: https://openweathermap.org/weather-conditions#Icon-list
 - **RESTful API:** Easily interact with the display using HTTP requests.
 - **Clear Display:** Reset and clear the display content.
 

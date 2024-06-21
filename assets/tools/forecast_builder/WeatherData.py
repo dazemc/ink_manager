@@ -30,12 +30,41 @@ class WeatherData:
         self.exclude = "hourly, minutely"
         self.unit = "standard"
         self.icons = {
-            "clouds": "cloud.png",
-            "partly_cloudy": "partly_cloudy.png",
-            "partly_rainy": "partly_rainy.png",
-            "rain": "rainy.png",
-            "clear": "sun.png",
+            "clear sky": ICON_DIR + "sun.png",
+            # clouds
+            "few clouds": ICON_DIR + "partly_cloudy.png",
+            "scattered clouds": ICON_DIR + "partly_cloudy.png",
+            "broken clouds": ICON_DIR + "cloud.png",
+            "overcast clouds": ICON_DIR + "cloud.png",
+            # atmosphere
+            "mist": "",
+            "smoke": "",
+            "haze": "",
+            "sand/dust whirls": "",
+            "fog": "",
+            "sand": "",
+            "dust": "",
+            "volcanic ash": "",
+            "squalls": "",
+            "tornado": "",
+            "thunderstorm": "",
+            # snow
+            # TODO: all snow icons are same so parse instead of assign
+            # rain
+            "light rain": ICON_DIR + "partly_rainy.png",
+            "moderate rain": ICON_DIR + "partly_rainy.png",
+            "heavy intensity rain": ICON_DIR + "rainy.png",
+            "very heavy rain": ICON_DIR + "rainy.png",
+            "extreme rain": ICON_DIR + "rainy.png",
+            "freezing rain": "",
+            "shower rain": ICON_DIR + "rainy.png",
+            "heavy intensity shower rain": ICON_DIR + "rainy.png",
+            "ragged shower rain": ICON_DIR + "rainy.png",
+            "rain": ICON_DIR + "partly_rainy.png",
+            # TODO: drizzle
+            # TODO: thunderstorm
         }
+
         self.response = {}
 
     def get_icons(self) -> list:
@@ -54,10 +83,10 @@ class WeatherData:
         forecast_image = Image.new("RGB", (WIDTH, HEIGHT), 0xFFFFFF)
         for day in self.response[:5]:
             day_name = day["dt"]
-            condition = day["weather"][0]["main"].lower()
+            condition = self.icons[day["weather"][0]["description"]]
             min_temp = str(day["temp"]["min"]) + "\u2109"
             max_temp = str(day["temp"]["max"]) + "\u2109"
-            icon_image = Image.open(ICON_DIR + self.icons[condition]).convert("RGBA")
+            icon_image = Image.open(condition).convert("RGBA")
             w, h = icon_image.size
             text_w = self.text_size(day_name)[0]
             h_offset = int(CENTER_HEIGHT - h / 2)
@@ -142,5 +171,5 @@ class WeatherData:
 if DEBUG:
     wd = WeatherData()
     wd.get_response()
-    print(json.dumps(wd.response[0], sort_keys=True, indent=4))
+    print(json.dumps(wd.response, sort_keys=True, indent=4))
     wd.create_forecast()
