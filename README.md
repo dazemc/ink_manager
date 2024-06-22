@@ -1,6 +1,6 @@
 # E-Ink Display Server
 
-This project provides a Flask-based server to interact with an e-ink display. It allows for displaying images, text, weather updates, and more on an e-ink screen.
+This project provides a Flask-based server to interact with an e-ink display. It allows for displaying images, text, weather updates, and more on an e-ink screen. Requires OPEN_WEATHER_API environment variable to be set, https://openweathermap.org/
 
 ## Features
 

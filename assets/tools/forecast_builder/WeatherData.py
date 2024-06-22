@@ -4,7 +4,7 @@ import requests
 import json
 from PIL import Image, ImageDraw, ImageFont
 
-DEBUG = False
+DEBUG = True
 
 CWD = os.getcwd()
 ICON_DIR = CWD + "/assets/images/weather_icons/"
@@ -29,46 +29,44 @@ class WeatherData:
         self.api = os.environ["OPEN_WEATHER_API"]
         self.exclude = "hourly, minutely"
         self.unit = "standard"
+        self.bg = "light/"
+        self.daytime = "DAY"
+        self.response = {}
         self.icons = {
-            "clear sky": ICON_DIR + "sun.png",
+            "clear sky": f"{ICON_DIR}{self.bg}{self.daytime} clear sky.png",
             # clouds
-            "few clouds": ICON_DIR + "partly_cloudy.png",
-            "scattered clouds": ICON_DIR + "partly_cloudy.png",
-            "broken clouds": ICON_DIR + "cloud.png",
-            "overcast clouds": ICON_DIR + "cloud.png",
+            "few clouds": f"{ICON_DIR}{self.bg}{self.daytime} few clouds.png",
+            "scattered clouds": f"{ICON_DIR}{self.bg}{self.daytime} few clouds.png",
+            "broken clouds": f"{ICON_DIR}{self.bg}{self.daytime} scattered clouds.png",
+            "overcast clouds": f"{ICON_DIR}{self.bg}{self.daytime} scattered clouds.png",
             # atmosphere
-            "mist": "",
-            "smoke": "",
-            "haze": "",
-            "sand/dust whirls": "",
-            "fog": "",
-            "sand": "",
-            "dust": "",
-            "volcanic ash": "",
-            "squalls": "",
-            "tornado": "",
-            "thunderstorm": "",
+            "mist": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
+            "smoke": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
+            "haze": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
+            "sand/dust whirls": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
+            "fog": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
+            "sand": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
+            "dust": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
+            "volcanic ash": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
+            "squalls": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
+            "tornado": f"{ICON_DIR}{self.bg}Air.png",
+            "thunderstorm": f"{ICON_DIR}{self.bg}{self.daytime} thunderstorm.png",
             # snow
             # TODO: all snow icons are same so parse instead of assign
             # rain
-            "light rain": ICON_DIR + "partly_rainy.png",
-            "moderate rain": ICON_DIR + "partly_rainy.png",
-            "heavy intensity rain": ICON_DIR + "rainy.png",
-            "very heavy rain": ICON_DIR + "rainy.png",
-            "extreme rain": ICON_DIR + "rainy.png",
-            "freezing rain": "",
-            "shower rain": ICON_DIR + "rainy.png",
-            "heavy intensity shower rain": ICON_DIR + "rainy.png",
-            "ragged shower rain": ICON_DIR + "rainy.png",
-            "rain": ICON_DIR + "partly_rainy.png",
+            "light rain": f"{ICON_DIR}{self.bg}{self.daytime} shower rain.png",
+            "moderate rain": f"{ICON_DIR}{self.bg}{self.daytime} shower rain.png",
+            "heavy intensity rain": f"{ICON_DIR}{self.bg}{self.daytime} rain.png",
+            "very heavy rain": f"{ICON_DIR}{self.bg}{self.daytime} rain.png",
+            "extreme rain": f"{ICON_DIR}{self.bg}{self.daytime} rain.png",
+            "freezing rain": f"{ICON_DIR}{self.bg}{self.daytime} snow.png",
+            "shower rain": f"{ICON_DIR}{self.bg}{self.daytime} shower rain.png",
+            "heavy intensity shower rain": f"{ICON_DIR}{self.bg}{self.daytime} rain.png",
+            "ragged shower rain": f"{ICON_DIR}{self.bg}{self.daytime} rain.png",
+            "rain": f"{ICON_DIR}{self.bg}{self.daytime} rain.png",
             # TODO: drizzle
             # TODO: thunderstorm
         }
-
-        self.response = {}
-
-    def get_icons(self) -> list:
-        return [i for i in os.listdir(ICON_DIR)]
 
     def text_size(self, text) -> tuple:
         canvas = Image.new("RGB", (400, 100))

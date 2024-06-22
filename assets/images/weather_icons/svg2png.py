@@ -3,7 +3,7 @@ import os, sys
 
 CWD = os.getcwd()
 ARG = sys.argv[1]
-if sys.argv[1] == '.':
+if ARG == '.':
     ARG = CWD
 SVG_PATH = CWD + '/' + ARG
 SVG = os.listdir(SVG_PATH)
