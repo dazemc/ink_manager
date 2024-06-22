@@ -1,7 +1,7 @@
 from assets.tools.forecast_builder.WeatherData import WeatherData
 from ink_display import InkDisplay
 import RPi.GPIO as GPIO
-import sys, os
+import os
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(24, GPIO.IN)
@@ -16,6 +16,6 @@ if busy == 1:
     wd.create_forecast()
     ink.display_image(cwd + "/assets/images/weather_forecast/forecast.png")
     ink.sleep()
-    print(0)
-else:
     print(1)
+else:
+    print(0)

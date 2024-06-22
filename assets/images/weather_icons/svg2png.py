@@ -1,11 +1,14 @@
 from cairosvg import svg2png
-import os
+import os, sys
 
 CWD = os.getcwd()
-SVG_PATH = CWD + "/light/"
+ARG = sys.argv[1]
+if sys.argv[1] == '.':
+    ARG = CWD
+SVG_PATH = CWD + '/' + ARG
 SVG = os.listdir(SVG_PATH)
 
-for icon in SVG:
-    with open(SVG_PATH + icon, "rb") as f:
+for img in SVG:
+    with open(SVG_PATH + img, "rb") as f:
         svg_code = f.read()
-    svg2png(bytestring=svg_code, write_to=SVG_PATH + icon.split('.')[0] + ".png")
+    svg2png(bytestring=svg_code, write_to=SVG_PATH + img.split('.')[0] + ".png")

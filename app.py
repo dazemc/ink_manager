@@ -118,7 +118,7 @@ def reset() -> str:
 
 @app.route("/upload_image", methods=["GET", "POST"])
 def display_upload_image() -> str:
-    clean()
+    clean(False)
     if request.method == "GET":
         if DEBUG:
             logging.info("Displaying image: %s", image)
@@ -141,7 +141,7 @@ def display_upload_image() -> str:
 
 @app.route("/update_weather", methods=["GET"])
 def update_weather():
-    clean()
+    clean(False)
     wd.get_response()
     wd.create_forecast()
     ink.display_image(cwd + "/assets/images/weather_forecast/forecast.png")
@@ -150,7 +150,7 @@ def update_weather():
 
 
 @app.route("/clear", methods=["GET"])
-def clean(sleep: bool = False) -> str:
+def clean(sleep: bool = True) -> str:
     ink.init()
     ink.clear()
     if sleep:
