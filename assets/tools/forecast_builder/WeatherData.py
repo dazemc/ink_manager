@@ -4,7 +4,7 @@ import requests
 import json
 from PIL import Image, ImageDraw, ImageFont
 
-DEBUG = False
+DEBUG = True
 
 CWD = os.getcwd()
 ICON_DIR = CWD + "/assets/images/weather_icons/"
@@ -16,7 +16,7 @@ CENTER_HEIGHT = HEIGHT / 2
 CENTER = (CENTER_WIDTH, CENTER_HEIGHT)
 SPACING = 8
 TODAY = datetime.today().strftime("%m-%d-%Y")
-FONT_SIZE_HEADER = 28
+FONT_SIZE_HEADER = 18
 FONT_SIZE_SUB = 22
 FONT_HEADER = ImageFont.truetype(CWD + "/assets/fonts/Font.ttc", FONT_SIZE_HEADER)
 FONT_SUB = ImageFont.truetype(CWD + "/assets/fonts/Helvetica.ttc", FONT_SIZE_SUB)
@@ -84,6 +84,7 @@ class WeatherData:
             condition = self.icons[day["weather"][0]["description"]]
             min_temp = str(day["temp"]["min"]) + "\u2109"
             max_temp = str(day["temp"]["max"]) + "\u2109"
+            week_day = day["weekday"]
             icon_image = Image.open(condition).convert("RGBA")
             w, h = icon_image.size
             text_w = self.text_size(day_name)[0]
@@ -91,9 +92,15 @@ class WeatherData:
             forecast_image.paste(icon_image, (pos, h_offset), mask=icon_image)
             draw = ImageDraw.Draw(forecast_image)
             draw.text(
-                (pos + text_w / 2 + SPACING, HEIGHT / 4),
+                (pos + text_w / 2 + SPACING, HEIGHT / 4 + 20),
                 day_name,
                 font=FONT_HEADER,
+                fill="gray",
+            )
+            draw.text(
+                (pos + text_w / 2, HEIGHT / 4 + 40),
+                week_day,
+                font=FONT_SUB,
                 fill="black",
             )
             draw.text(
@@ -129,6 +136,9 @@ class WeatherData:
 
     def parse_response(self, response) -> dict:
         for i in range(8):
+            response[i]["weekday"] = datetime.fromtimestamp(
+                int(response[i]["dt"])
+            ).strftime("%A")
             response[i]["dt"] = datetime.fromtimestamp(int(response[i]["dt"])).strftime(
                 "%m/%d"
             )
