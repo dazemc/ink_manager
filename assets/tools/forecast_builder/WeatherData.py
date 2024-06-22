@@ -4,7 +4,7 @@ import requests
 import json
 from PIL import Image, ImageDraw, ImageFont
 
-DEBUG = False
+DEBUG = True
 
 CWD = os.getcwd()
 ICON_DIR = CWD + "/assets/images/weather_icons/"
@@ -15,7 +15,8 @@ CENTER_WIDTH = WIDTH / 2
 CENTER_HEIGHT = HEIGHT / 2
 CENTER = (CENTER_WIDTH, CENTER_HEIGHT)
 SPACING = 8
-TODAY = datetime.today().strftime("%m-%d-%Y")
+TODAY = datetime.today()
+HOUR = int(TODAY.strftime("%H"))
 FONT_SIZE_HEADER = 18
 FONT_SIZE_SUB = 22
 FONT_HEADER = ImageFont.truetype(CWD + "/assets/fonts/Font.ttc", FONT_SIZE_HEADER)
@@ -177,7 +178,8 @@ class WeatherData:
 
 
 if DEBUG:
-    wd = WeatherData()
-    wd.get_response()
-    print(json.dumps(wd.response, sort_keys=True, indent=4))
-    wd.create_forecast()
+    # wd = WeatherData()
+    # wd.get_response()
+    # print(json.dumps(wd.response, sort_keys=True, indent=4))
+    # wd.create_forecast()
+    print(HOUR)
