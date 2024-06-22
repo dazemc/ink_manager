@@ -4,7 +4,7 @@ import requests
 import json
 from PIL import Image, ImageDraw, ImageFont
 
-DEBUG = True
+DEBUG = False
 
 CWD = os.getcwd()
 ICON_DIR = CWD + "/assets/images/weather_icons/"
