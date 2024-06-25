@@ -119,7 +119,7 @@ def reset() -> str:
 
 @app.route("/ip", methods=["GET"])
 def get_ip() -> str:
-    subprocess.check_output(
+    return subprocess.check_output(
         [
             "sh",
             "get_ip.sh",
