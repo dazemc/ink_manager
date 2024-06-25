@@ -119,15 +119,13 @@ def reset() -> str:
 
 @app.route("/ip", methods=["GET"])
 def get_ip() -> str:
-    return str(
-        subprocess.run(
-            [
-                "sh",
-                "get_ip.sh",
-            ],
-            check=False,
-        )
-    )
+    subprocess.check_output(
+        [
+            "sh",
+            "get_ip.sh",
+        ]
+    ).decode("utf-8")
+
 
 
 @app.route("/upload_image", methods=["GET", "POST"])
