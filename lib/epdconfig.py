@@ -208,7 +208,7 @@ class SunriseX3:
             self.GPIO.setup(self.BUSY_PIN, self.GPIO.IN)
 
             self.GPIO.output(self.PWR_PIN, 1)
-        
+       
             # SPI device, bus = 0, device = 0
             self.SPI.open(2, 0)
             self.SPI.max_speed_hz = 4000000

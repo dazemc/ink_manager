@@ -4,7 +4,7 @@ import requests
 import json
 from PIL import Image, ImageDraw, ImageFont
 
-DEBUG = True
+DEBUG = False
 
 CWD = os.getcwd()
 ICON_DIR = CWD + "/assets/images/weather_icons/"
@@ -27,6 +27,8 @@ class WeatherData:
     def __init__(self) -> None:
         self.zip = "98022"
         self.cc = "US"
+        self.state_code = "wa"
+        self.city_name = "enumclaw"
         self.api = os.environ["OPEN_WEATHER_API"]
         self.exclude = "hourly, minutely"
         self.unit = "standard"
@@ -124,9 +126,9 @@ class WeatherData:
             forecast_image.save(save_dir)
 
     def get_coord(self) -> tuple:
-        url = f"http://api.openweathermap.org/geo/1.0/zip?zip={self.zip},{self.cc}&appid={self.api}"
+        url = f"http://api.openweathermap.org/geo/1.0/direct?q={self.city_name},{self.state_code},{self.cc}&appid={self.api}"
         resp = requests.get(url, timeout=60)
-        return (resp.json()["lat"], resp.json()["lon"])
+        return (resp.json()[0]["lat"], resp.json()[0]["lon"])
 
     def get_weather(self, coord):
         lat = coord[0]
@@ -178,8 +180,7 @@ class WeatherData:
 
 
 if DEBUG:
-    # wd = WeatherData()
-    # wd.get_response()
-    # print(json.dumps(wd.response, sort_keys=True, indent=4))
-    # wd.create_forecast()
-    print(HOUR)
+    wd = WeatherData()
+    wd.get_response()
+    print(json.dumps(wd.response, sort_keys=True, indent=4))
+    wd.create_forecast()
