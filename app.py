@@ -1,5 +1,6 @@
 import time
 import os
+import subprocess
 from flask import Flask, request
 from flask_cors import CORS
 import ink_display as ink
@@ -114,6 +115,19 @@ def display() -> str:
 def reset() -> str:
     ink.draw_image = ink.blank_image()
     return "Success"
+
+
+@app.route("/ip", methods=["GET"])
+def get_ip() -> str:
+    return str(
+        subprocess.run(
+            [
+                "sh",
+                "get_ip.sh",
+            ],
+            check=False,
+        )
+    )
 
 
 @app.route("/upload_image", methods=["GET", "POST"])
