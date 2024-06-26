@@ -95,7 +95,7 @@ class WeatherData:
             max_temp = str(day["temp"]["max"]) + "\u2109"
             week_day = day["weekday"]
             if i == 0:
-                if TODAY > day["sunset"] and TODAY > day["sunrise"]:
+                if TODAY > day["sunset"] and TODAY < day["sunrise"]:
                     self.nightmode = True
                     week_day = "Tonight"
                     max_temp = str(day["temp"]["night"])
