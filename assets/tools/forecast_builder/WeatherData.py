@@ -1,10 +1,10 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 import json
 from PIL import Image, ImageDraw, ImageFont
 
-DEBUG = False
+DEBUG = True
 
 CWD = os.getcwd()
 ICON_DIR = CWD + "/assets/images/weather_icons/"
@@ -15,7 +15,7 @@ CENTER_WIDTH = WIDTH / 2
 CENTER_HEIGHT = HEIGHT / 2
 CENTER = (CENTER_WIDTH, CENTER_HEIGHT)
 SPACING = 8
-TODAY = datetime.today()
+TODAY = datetime.now()
 HOUR = int(TODAY.strftime("%H"))
 FONT_SIZE_HEADER = 18
 FONT_SIZE_SUB = 22
@@ -94,8 +94,18 @@ class WeatherData:
             min_temp = str(day["temp"]["min"]) + "\u2109"
             max_temp = str(day["temp"]["max"]) + "\u2109"
             week_day = day["weekday"]
+            sunset = day["sunset"]
+            sunrise = day["sunrise"]
+            if sunset >= sunrise:
+                sunrise += timedelta(days=1)
+            is_night = sunset <= TODAY or TODAY < sunrise
+            if DEBUG:
+                print("is_night", is_night)
+                print("sunrise", sunrise)
+                print("sunset: ", sunset)
+                print("now: ", TODAY)
             if i == 0:
-                if TODAY > day["sunset"] and TODAY < day["sunrise"]:
+                if is_night:
                     self.nightmode = True
                     week_day = "Tonight"
                     max_temp = str(day["temp"]["night"])
@@ -104,7 +114,6 @@ class WeatherData:
                     self.nightmode = False
             self.icons = self.get_icons(ICON_DIR, self.bg, self.nightmode)
             condition = self.icons[day["weather"][0]["description"]]
-            print(condition)
             icon_image = Image.open(condition).convert("RGBA")
             w, h = icon_image.size
             text_w = self.text_size(day_name)[0]
