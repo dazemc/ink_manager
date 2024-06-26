@@ -129,6 +129,7 @@ def get_ip() -> str:
     draw = ink.draw(ink.draw_image)
     ink.draw_text((200, 240), text=ip, font=font, size=64, color="#000000", draw=draw)
     ink.display_draw(ink.draw_image)
+    ink.sleep()
     return ip
 
 
