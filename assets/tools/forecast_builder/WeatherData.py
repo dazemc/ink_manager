@@ -4,7 +4,7 @@ import requests
 import json
 from PIL import Image, ImageDraw, ImageFont
 
-DEBUG = False
+DEBUG = True
 
 CWD = os.getcwd()
 ICON_DIR = CWD + "/assets/images/weather_icons/"
@@ -33,40 +33,47 @@ class WeatherData:
         self.exclude = "hourly, minutely"
         self.unit = "standard"
         self.bg = "light/"
-        self.daytime = "DAY"
+        self.nightmode = False
         self.response = {}
-        self.icons = {
-            "clear sky": f"{ICON_DIR}{self.bg}{self.daytime} clear sky.png",
+        self.icons = {}
+
+    def get_icons(self, icon_dir: str, background: str, nightmode: bool) -> dict:
+        if nightmode is True:
+            daytime = "NIGHT"
+        else:
+            daytime = "DAY"
+        return {
+            "clear sky": f"{icon_dir}{background}{daytime} clear sky.png",
             # clouds
-            "few clouds": f"{ICON_DIR}{self.bg}{self.daytime} few clouds.png",
-            "scattered clouds": f"{ICON_DIR}{self.bg}{self.daytime} few clouds.png",
-            "broken clouds": f"{ICON_DIR}{self.bg}{self.daytime} scattered clouds.png",
-            "overcast clouds": f"{ICON_DIR}{self.bg}{self.daytime} scattered clouds.png",
+            "few clouds": f"{icon_dir}{background}{daytime} few clouds.png",
+            "scattered clouds": f"{icon_dir}{background}{daytime} few clouds.png",
+            "broken clouds": f"{icon_dir}{background}{daytime} scattered clouds.png",
+            "overcast clouds": f"{icon_dir}{background}{daytime} scattered clouds.png",
             # atmosphere
-            "mist": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
-            "smoke": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
-            "haze": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
-            "sand/dust whirls": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
-            "fog": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
-            "sand": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
-            "dust": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
-            "volcanic ash": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
-            "squalls": f"{ICON_DIR}{self.bg}{self.daytime} mist.png",
-            "tornado": f"{ICON_DIR}{self.bg}Air.png",
-            "thunderstorm": f"{ICON_DIR}{self.bg}{self.daytime} thunderstorm.png",
+            "mist": f"{icon_dir}{background}{daytime} mist.png",
+            "smoke": f"{icon_dir}{background}{daytime} mist.png",
+            "haze": f"{icon_dir}{background}{daytime} mist.png",
+            "sand/dust whirls": f"{icon_dir}{background}{daytime} mist.png",
+            "fog": f"{icon_dir}{background}{daytime} mist.png",
+            "sand": f"{icon_dir}{background}{daytime} mist.png",
+            "dust": f"{icon_dir}{background}{daytime} mist.png",
+            "volcanic ash": f"{icon_dir}{background}{daytime} mist.png",
+            "squalls": f"{icon_dir}{background}{daytime} mist.png",
+            "tornado": f"{icon_dir}{background}Air.png",
+            "thunderstorm": f"{icon_dir}{background}{daytime} thunderstorm.png",
             # snow
             # TODO: all snow icons are same so parse instead of assign
             # rain
-            "light rain": f"{ICON_DIR}{self.bg}{self.daytime} shower rain.png",
-            "moderate rain": f"{ICON_DIR}{self.bg}{self.daytime} shower rain.png",
-            "heavy intensity rain": f"{ICON_DIR}{self.bg}{self.daytime} rain.png",
-            "very heavy rain": f"{ICON_DIR}{self.bg}{self.daytime} rain.png",
-            "extreme rain": f"{ICON_DIR}{self.bg}{self.daytime} rain.png",
-            "freezing rain": f"{ICON_DIR}{self.bg}{self.daytime} snow.png",
-            "shower rain": f"{ICON_DIR}{self.bg}{self.daytime} shower rain.png",
-            "heavy intensity shower rain": f"{ICON_DIR}{self.bg}{self.daytime} rain.png",
-            "ragged shower rain": f"{ICON_DIR}{self.bg}{self.daytime} rain.png",
-            "rain": f"{ICON_DIR}{self.bg}{self.daytime} rain.png",
+            "light rain": f"{icon_dir}{background}{daytime} shower rain.png",
+            "moderate rain": f"{icon_dir}{background}{daytime} shower rain.png",
+            "heavy intensity rain": f"{icon_dir}{background}{daytime} rain.png",
+            "very heavy rain": f"{icon_dir}{background}{daytime} rain.png",
+            "extreme rain": f"{icon_dir}{background}{daytime} rain.png",
+            "freezing rain": f"{icon_dir}{background}{daytime} snow.png",
+            "shower rain": f"{icon_dir}{background}{daytime} shower rain.png",
+            "heavy intensity shower rain": f"{icon_dir}{background}{daytime} rain.png",
+            "ragged shower rain": f"{icon_dir}{background}{daytime} rain.png",
+            "rain": f"{icon_dir}{background}{daytime} rain.png",
             # TODO: drizzle
             # TODO: thunderstorm
         }
@@ -82,11 +89,17 @@ class WeatherData:
         # need to break this up
         pos = SPACING
         forecast_image = Image.new("RGB", (WIDTH, HEIGHT), 0xFFFFFF)
-        for day in self.response[:5]:
+        for i, day in enumerate(self.response[:5]):
             day_name = day["dt"]
-            condition = self.icons[day["weather"][0]["description"]]
             min_temp = str(day["temp"]["min"]) + "\u2109"
             max_temp = str(day["temp"]["max"]) + "\u2109"
+            if i == 0 and TODAY > day["sunset"] and TODAY > day["sunrise"]:
+                self.nightmode = True
+                max_temp = str(day["temp"]["night"])
+            self.icons = self.get_icons(ICON_DIR, self.bg, self.nightmode)
+            condition = self.icons[day["weather"][0]["description"]]
+            print(condition)
+
             week_day = day["weekday"]
             icon_image = Image.open(condition).convert("RGBA")
             w, h = icon_image.size
@@ -145,18 +158,12 @@ class WeatherData:
             response[i]["dt"] = datetime.fromtimestamp(int(response[i]["dt"])).strftime(
                 "%m/%d"
             )
-            response[i]["sunrise"] = datetime.fromtimestamp(
-                int(response[i]["sunrise"])
-            ).strftime("%H:%M")
-            response[i]["sunset"] = datetime.fromtimestamp(
-                int(response[i]["sunset"])
-            ).strftime("%H:%M")
+            response[i]["sunrise"] = datetime.fromtimestamp(int(response[i]["sunrise"]))
+            response[i]["sunset"] = datetime.fromtimestamp(int(response[i]["sunset"]))
             response[i]["moonrise"] = datetime.fromtimestamp(
                 int(response[i]["moonrise"])
-            ).strftime("%H:%M")
-            response[i]["moonset"] = datetime.fromtimestamp(
-                int(response[i]["moonset"])
-            ).strftime("%H:%M")
+            )
+            response[i]["moonset"] = datetime.fromtimestamp(int(response[i]["moonset"]))
             response[i]["dew_point"] = int(
                 (float(response[i]["dew_point"]) - 273.15) * 1.8 + 32
             )
@@ -182,5 +189,5 @@ class WeatherData:
 if DEBUG:
     wd = WeatherData()
     wd.get_response()
-    print(json.dumps(wd.response, sort_keys=True, indent=4))
+    # print(json.dumps(wd.response, sort_keys=True, indent=4))
     wd.create_forecast()
