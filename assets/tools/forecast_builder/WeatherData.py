@@ -93,16 +93,18 @@ class WeatherData:
             day_name = day["dt"]
             min_temp = str(day["temp"]["min"]) + "\u2109"
             max_temp = str(day["temp"]["max"]) + "\u2109"
-            if i == 0 and TODAY > day["sunset"] and TODAY > day["sunrise"]:
-                self.nightmode = True
-                max_temp = str(day["temp"]["night"])
-            else:
-                self.nightmode = False
+            week_day = day["weekday"]
+            if i == 0:
+                if TODAY > day["sunset"] and TODAY > day["sunrise"]:
+                    self.nightmode = True
+                    week_day = "Tonight"
+                    max_temp = str(day["temp"]["night"])
+                else:
+                    week_day = "Today"
+                    self.nightmode = False
             self.icons = self.get_icons(ICON_DIR, self.bg, self.nightmode)
             condition = self.icons[day["weather"][0]["description"]]
             print(condition)
-
-            week_day = day["weekday"]
             icon_image = Image.open(condition).convert("RGBA")
             w, h = icon_image.size
             text_w = self.text_size(day_name)[0]
