@@ -96,6 +96,8 @@ class WeatherData:
             if i == 0 and TODAY > day["sunset"] and TODAY > day["sunrise"]:
                 self.nightmode = True
                 max_temp = str(day["temp"]["night"])
+            else:
+                self.nightmode = False
             self.icons = self.get_icons(ICON_DIR, self.bg, self.nightmode)
             condition = self.icons[day["weather"][0]["description"]]
             print(condition)
