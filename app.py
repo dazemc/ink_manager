@@ -119,13 +119,15 @@ def reset() -> str:
 
 @app.route("/ip", methods=["GET"])
 def get_ip() -> str:
-    return subprocess.check_output(
+    ip = subprocess.check_output(
         [
             "sh",
             "get_ip.sh",
         ]
     ).decode("utf-8")
-
+    clean(False)
+    ink.draw_text((400, 240), text=ip, font=font, size=64, color=000000, draw=ink.draw_image)
+    return ip
 
 
 @app.route("/upload_image", methods=["GET", "POST"])
@@ -164,6 +166,7 @@ def update_weather():
 @app.route("/clear", methods=["GET"])
 def clean(sleep: bool = True) -> str:
     ink.init()
+    reset()
     ink.clear()
     if sleep:
         ink.sleep()

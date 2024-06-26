@@ -4,7 +4,7 @@ import requests
 import json
 from PIL import Image, ImageDraw, ImageFont
 
-DEBUG = True
+DEBUG = False
 
 CWD = os.getcwd()
 ICON_DIR = CWD + "/assets/images/weather_icons/"
@@ -105,12 +105,11 @@ class WeatherData:
                 print("sunset: ", sunset)
                 print("now: ", TODAY)
             if i == 0:
+                week_day = "Current"
                 if is_night:
                     self.nightmode = True
-                    week_day = "Tonight"
                     max_temp = str(day["temp"]["night"])
                 else:
-                    week_day = "Today"
                     self.nightmode = False
             self.icons = self.get_icons(ICON_DIR, self.bg, self.nightmode)
             condition = self.icons[day["weather"][0]["description"]]
