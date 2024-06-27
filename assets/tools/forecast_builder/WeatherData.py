@@ -105,10 +105,10 @@ class WeatherData:
                 print("sunset: ", sunset)
                 print("now: ", TODAY)
             if i == 0:
-                week_day = "Current"
+                # week_day = "Current"
                 if is_night:
                     self.nightmode = True
-                    max_temp = str(day["temp"]["night"])
+                    max_temp = str(day["temp"]["night"]) + "\u2109"
                 else:
                     self.nightmode = False
             self.icons = self.get_icons(ICON_DIR, self.bg, self.nightmode)
