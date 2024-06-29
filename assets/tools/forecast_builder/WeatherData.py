@@ -3,8 +3,14 @@ from datetime import datetime, timedelta
 import requests
 import json
 from PIL import Image, ImageDraw, ImageFont
+import logging
 
 DEBUG = False
+SUNSET_TEST = False
+SUNSET_DELTA = timedelta(hours=15)
+if DEBUG:
+    logging.basicConfig(level=DEBUG)
+
 
 CWD = os.getcwd()
 ICON_DIR = CWD + "/assets/images/weather_icons/"
@@ -15,8 +21,6 @@ CENTER_WIDTH = WIDTH / 2
 CENTER_HEIGHT = HEIGHT / 2
 CENTER = (CENTER_WIDTH, CENTER_HEIGHT)
 SPACING = 8
-TODAY = datetime.now()
-HOUR = int(TODAY.strftime("%H"))
 FONT_SIZE_HEADER = 18
 FONT_SIZE_SUB = 22
 FONT_HEADER = ImageFont.truetype(CWD + "/assets/fonts/Font.ttc", FONT_SIZE_HEADER)
@@ -33,15 +37,16 @@ class WeatherData:
         self.exclude = "hourly, minutely"
         self.unit = "standard"
         self.bg = "light/"
-        self.nightmode = False
+        self.daymode = True
         self.response = {}
         self.icons = {}
+        self.now = datetime.today()
 
-    def get_icons(self, icon_dir: str, background: str, nightmode: bool) -> dict:
-        if nightmode is True:
-            daytime = "NIGHT"
-        else:
+    def get_icons(self, icon_dir: str, background: str, daymode: bool) -> dict:
+        if daymode is True:
             daytime = "DAY"
+        else:
+            daytime = "NIGHT"
         return {
             "clear sky": f"{icon_dir}{background}{daytime} clear sky.png",
             # clouds
@@ -87,6 +92,9 @@ class WeatherData:
 
     def create_forecast(self):
         # need to break this up
+        self.now = datetime.today()
+        if SUNSET_TEST:
+            self.now += SUNSET_DELTA
         pos = SPACING
         forecast_image = Image.new("RGB", (WIDTH, HEIGHT), 0xFFFFFF)
         for i, day in enumerate(self.response[:5]):
@@ -96,22 +104,25 @@ class WeatherData:
             week_day = day["weekday"]
             sunset = day["sunset"]
             sunrise = day["sunrise"]
-            if sunset >= sunrise:
-                sunrise += timedelta(days=1)
-            is_night = sunset <= TODAY or TODAY < sunrise
+            is_day = sunrise <= self.now < sunset
             if DEBUG:
-                print("is_night", is_night)
-                print("sunrise", sunrise)
-                print("sunset: ", sunset)
-                print("now: ", TODAY)
+                logging.info("is_day: %s", is_day)
+                logging.info("sunrise <= %s", sunrise <= self.now)
+                logging.info("sunset < : %s", self.now < sunset)
+                logging.info("sunrise: %s", sunrise)
+                logging.info("sunset: %s", sunset)
+                logging.info("now: %s", self.now)
+                logging.info("mode 1: %s", self.daymode)
             if i == 0:
                 # week_day = "Current"
-                if is_night:
-                    self.nightmode = True
+                if not is_day:
+                    self.daymode = False
                     max_temp = str(day["temp"]["night"]) + "\u2109"
-                else:
-                    self.nightmode = False
-            self.icons = self.get_icons(ICON_DIR, self.bg, self.nightmode)
+            else:
+                self.daymode = True
+            if DEBUG:
+                logging.info("mode 2: %s", self.daymode)
+            self.icons = self.get_icons(ICON_DIR, self.bg, self.daymode)
             condition = self.icons[day["weather"][0]["description"]]
             icon_image = Image.open(condition).convert("RGBA")
             w, h = icon_image.size
