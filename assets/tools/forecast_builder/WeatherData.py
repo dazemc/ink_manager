@@ -1,11 +1,13 @@
 import os
 from datetime import datetime, timedelta
-import requests
-import json
-from PIL import Image, ImageDraw, ImageFont
 import logging
+import requests
 
-DEBUG = False
+# import json
+from PIL import Image, ImageDraw, ImageFont
+
+
+DEBUG = True
 SUNSET_TEST = False
 SUNSET_DELTA = timedelta(hours=15)
 if DEBUG:
@@ -40,7 +42,8 @@ class WeatherData:
         self.daymode = True
         self.response = {}
         self.icons = {}
-        self.now = datetime.today()
+        self.sunset = ""
+        self.sunrise = ""
 
     def get_icons(self, icon_dir: str, background: str, daymode: bool) -> dict:
         if daymode is True:
@@ -84,17 +87,25 @@ class WeatherData:
         }
 
     def text_size(self, text) -> tuple:
+        """Creates a boundary box to determine width and height of text
+
+        Args:
+            text (str): input text
+
+        Returns:
+            tuple: width, height
+        """
         canvas = Image.new("RGB", (400, 100))
         draw = ImageDraw.Draw(canvas)
         draw.text((10, 10), text, font=FONT_HEADER, fill="white")
         bbox = canvas.getbbox()
         return (bbox[2] - bbox[0], bbox[3] - bbox[1])
 
-    def create_forecast(self):
+    def create_forecast(self) -> None:
         # need to break this up
-        self.now = datetime.today()
+        now = datetime.today()
         if SUNSET_TEST:
-            self.now += SUNSET_DELTA
+            now += SUNSET_DELTA
         pos = SPACING
         forecast_image = Image.new("RGB", (WIDTH, HEIGHT), 0xFFFFFF)
         for i, day in enumerate(self.response[:5]):
@@ -104,14 +115,14 @@ class WeatherData:
             week_day = day["weekday"]
             sunset = day["sunset"]
             sunrise = day["sunrise"]
-            is_day = sunrise <= self.now < sunset
+            is_day = sunrise <= now < sunset
             if DEBUG:
                 logging.info("is_day: %s", is_day)
-                logging.info("sunrise <= %s", sunrise <= self.now)
-                logging.info("sunset < : %s", self.now < sunset)
+                logging.info("sunrise <= %s", sunrise <= now)
+                logging.info("sunset < : %s", now < sunset)
                 logging.info("sunrise: %s", sunrise)
                 logging.info("sunset: %s", sunset)
-                logging.info("now: %s", self.now)
+                logging.info("now: %s", now)
                 logging.info("mode 1: %s", self.daymode)
             if i == 0:
                 # week_day = "Current"
@@ -126,7 +137,7 @@ class WeatherData:
             condition = self.icons[day["weather"][0]["description"]]
             icon_image = Image.open(condition).convert("RGBA")
             w, h = icon_image.size
-            text_w = self.text_size(day_name)[0]
+            text_w = self.text_size(day_name)[0]  # used to set origin as center bottom
             h_offset = int(CENTER_HEIGHT - h / 2)
             forecast_image.paste(icon_image, (pos, h_offset), mask=icon_image)
             draw = ImageDraw.Draw(forecast_image)
@@ -166,7 +177,7 @@ class WeatherData:
         resp = requests.get(url, timeout=60)
         return (resp.json()[0]["lat"], resp.json()[0]["lon"])
 
-    def get_weather(self, coord):
+    def get_weather(self, coord) -> dict:
         lat = coord[0]
         lon = coord[1]
         url = f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&exclude={self.exclude}&appid={self.api}&units={self.unit}"
@@ -201,7 +212,7 @@ class WeatherData:
                     (float(response[i]["feels_like"][key]) - 273.15) * 1.8 + 32
                 )
 
-    def get_response(self):
+    def get_response(self) -> None:
         weatherdata = WeatherData()
         coord = weatherdata.get_coord()
         forecast_r = weatherdata.get_weather(coord)
