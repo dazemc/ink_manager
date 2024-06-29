@@ -1,5 +1,6 @@
 from cairosvg import svg2png
-import os, sys
+import os
+import sys
 
 CWD = os.getcwd()
 ARG = sys.argv[1]
@@ -11,4 +12,5 @@ SVG = os.listdir(SVG_PATH)
 for img in SVG:
     with open(SVG_PATH + img, "rb") as f:
         svg_code = f.read()
-    svg2png(bytestring=svg_code, write_to=SVG_PATH + img.split('.')[0] + ".png")
+    svg2png(bytestring=svg_code, write_to=SVG_PATH +
+            img.split('.')[0] + ".png")

@@ -39,6 +39,7 @@ def return_gimp_palette(colors, name, columns=0):
         ),
     )
 
+
 if __name__ == '__main__':
     sys.stdout.write(
         return_gimp_palette(parse_adobe_act(sys.argv[1]), sys.argv[1])

@@ -50,13 +50,13 @@ class EPD:
         self.cs_pin = epdconfig.CS_PIN
         self.width = EPD_WIDTH
         self.height = EPD_HEIGHT
-        self.BLACK = 0x000000  #   0000  BGR
-        self.WHITE = 0xFFFFFF  #   0001
-        self.GREEN = 0x00FF00  #   0010
-        self.BLUE = 0xFF0000  #   0011
-        self.RED = 0x0000FF  #   0100
-        self.YELLOW = 0x00FFFF  #   0101
-        self.ORANGE = 0x0080FF  #   0110
+        self.BLACK = 0x000000  # 0000  BGR
+        self.WHITE = 0xFFFFFF  # 0001
+        self.GREEN = 0x00FF00  # 0010
+        self.BLUE = 0xFF0000  # 0011
+        self.RED = 0x0000FF  # 0100
+        self.YELLOW = 0x00FFFF  # 0101
+        self.ORANGE = 0x0080FF  # 0110
 
     # Hardware reset
     def reset(self):

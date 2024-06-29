@@ -7,7 +7,7 @@ import requests
 from PIL import Image, ImageDraw, ImageFont
 
 
-DEBUG = True
+DEBUG = False
 SUNSET_TEST = False
 SUNSET_DELTA = timedelta(hours=15)
 if DEBUG:
@@ -25,8 +25,10 @@ CENTER = (CENTER_WIDTH, CENTER_HEIGHT)
 SPACING = 8
 FONT_SIZE_HEADER = 18
 FONT_SIZE_SUB = 22
-FONT_HEADER = ImageFont.truetype(CWD + "/assets/fonts/Font.ttc", FONT_SIZE_HEADER)
-FONT_SUB = ImageFont.truetype(CWD + "/assets/fonts/Helvetica.ttc", FONT_SIZE_SUB)
+FONT_HEADER = ImageFont.truetype(
+    CWD + "/assets/fonts/Font.ttc", FONT_SIZE_HEADER)
+FONT_SUB = ImageFont.truetype(
+    CWD + "/assets/fonts/Helvetica.ttc", FONT_SIZE_SUB)
 
 
 class WeatherData:
@@ -137,7 +139,8 @@ class WeatherData:
             condition = self.icons[day["weather"][0]["description"]]
             icon_image = Image.open(condition).convert("RGBA")
             w, h = icon_image.size
-            text_w = self.text_size(day_name)[0]  # used to set origin as center bottom
+            # used to set origin as center bottom
+            text_w = self.text_size(day_name)[0]
             h_offset = int(CENTER_HEIGHT - h / 2)
             forecast_image.paste(icon_image, (pos, h_offset), mask=icon_image)
             draw = ImageDraw.Draw(forecast_image)
@@ -173,14 +176,16 @@ class WeatherData:
             forecast_image.save(save_dir)
 
     def get_coord(self) -> tuple:
-        url = f"http://api.openweathermap.org/geo/1.0/direct?q={self.city_name},{self.state_code},{self.cc}&appid={self.api}"
+        url = f"http://api.openweathermap.org/geo/1.0/direct?q={
+            self.city_name},{self.state_code},{self.cc}&appid={self.api}"
         resp = requests.get(url, timeout=60)
         return (resp.json()[0]["lat"], resp.json()[0]["lon"])
 
     def get_weather(self, coord) -> dict:
         lat = coord[0]
         lon = coord[1]
-        url = f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&exclude={self.exclude}&appid={self.api}&units={self.unit}"
+        url = f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={
+            lon}&exclude={self.exclude}&appid={self.api}&units={self.unit}"
         resp = requests.get(url, timeout=60)
         return resp.json()["daily"]
 
@@ -192,12 +197,15 @@ class WeatherData:
             response[i]["dt"] = datetime.fromtimestamp(int(response[i]["dt"])).strftime(
                 "%m/%d"
             )
-            response[i]["sunrise"] = datetime.fromtimestamp(int(response[i]["sunrise"]))
-            response[i]["sunset"] = datetime.fromtimestamp(int(response[i]["sunset"]))
+            response[i]["sunrise"] = datetime.fromtimestamp(
+                int(response[i]["sunrise"]))
+            response[i]["sunset"] = datetime.fromtimestamp(
+                int(response[i]["sunset"]))
             response[i]["moonrise"] = datetime.fromtimestamp(
                 int(response[i]["moonrise"])
             )
-            response[i]["moonset"] = datetime.fromtimestamp(int(response[i]["moonset"]))
+            response[i]["moonset"] = datetime.fromtimestamp(
+                int(response[i]["moonset"]))
             response[i]["dew_point"] = int(
                 (float(response[i]["dew_point"]) - 273.15) * 1.8 + 32
             )
