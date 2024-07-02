@@ -190,16 +190,16 @@ class WeatherData:
             forecast_image.save(save_dir)
 
     def get_coord(self) -> tuple:
-        url = f"http://api.openweathermap.org/geo/1.0/direct?q={
-            self.city_name},{self.state_code},{self.cc}&appid={self.api}"
+        url = f"""http://api.openweathermap.org/geo/1.0/direct?q={
+            self.city_name},{self.state_code},{self.cc}&appid={self.api}"""
         resp = requests.get(url, timeout=60)
         return (resp.json()[0]["lat"], resp.json()[0]["lon"])
 
     def get_weather(self, coord) -> dict:
         lat = coord[0]
         lon = coord[1]
-        url = f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={
-            lon}&exclude={self.exclude}&appid={self.api}&units={self.unit}"
+        url = f"""https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={
+            lon}&exclude={self.exclude}&appid={self.api}&units={self.unit}"""
         resp = requests.get(url, timeout=60)
         return resp.json()["daily"]
 
