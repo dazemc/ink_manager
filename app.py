@@ -2,7 +2,7 @@ import time
 import os
 import subprocess
 import json
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 import ink_display as ink
 import logging.config
@@ -33,6 +33,11 @@ if DEBUG:
     LOGGER = logging.getLogger(__name__)
     setup_logging()
     LOGGER.info("Logger started")
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico')
 
 
 @app.route("/test", methods=["GET"])
