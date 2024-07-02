@@ -4,13 +4,14 @@ import PIL
 from PIL import Image
 import io
 import json
+import os
 
 # Display resolution
 EPD_WIDTH = 800
 EPD_HEIGHT = 480
 
 logger = logging.getLogger(__name__)
-config_file = "../logging.json"
+config_file = f"{os.getcwd}/../logging.json"
 with open(config_file) as f:
     config = json.load(f)
 logging.config.dictConfig(config)
