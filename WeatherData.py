@@ -11,7 +11,7 @@ import requests
 from PIL import Image, ImageDraw, ImageFont
 
 # Test/Debug
-DEBUG = True
+DEBUG = False
 SUNSET_TEST = False
 SUNSET_DELTA = timedelta(hours=15)
 
