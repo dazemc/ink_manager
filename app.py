@@ -35,10 +35,14 @@ if DEBUG:
     LOGGER.info("Logger started")
 
 
-@app.route('/favicon.ico')
+@app.route("/favicon.ico")
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico')
 
+
+@app.route("/")
+def home():
+    return "Nothing here yet"
 
 @app.route("/test", methods=["GET"])
 def test() -> str:
