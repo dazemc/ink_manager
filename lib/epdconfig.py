@@ -5,7 +5,7 @@ import time
 import json
 
 logger = logging.getLogger(__name__)
-config_file = f"{os.getcwd()}/../logging.json"
+config_file = "logging.json"
 with open(config_file) as f:
     config = json.load(f)
 logging.config.dictConfig(config)
