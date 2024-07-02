@@ -1,17 +1,19 @@
+"""Retrieve weather data from open weather api and produce a forecast image
+
+    Returns:
+        None: ./assets/images/weather_forecast/forecast.png
+    """
 import os
 from datetime import datetime, timedelta
-import logging
+import logging.config
+import json
 import requests
-
-# import json
 from PIL import Image, ImageDraw, ImageFont
 
-
-DEBUG = False
+# Test/Debug
+DEBUG = True
 SUNSET_TEST = False
 SUNSET_DELTA = timedelta(hours=15)
-if DEBUG:
-    logging.basicConfig(level=DEBUG)
 
 
 CWD = os.getcwd()
@@ -29,6 +31,18 @@ FONT_HEADER = ImageFont.truetype(
     CWD + "/assets/fonts/Font.ttc", FONT_SIZE_HEADER)
 FONT_SUB = ImageFont.truetype(
     CWD + "/assets/fonts/Helvetica.ttc", FONT_SIZE_SUB)
+
+
+def setup_logging() -> None:
+    config_file = "logging.json"
+    with open(config_file) as f:
+        config = json.load(f)
+    logging.config.dictConfig(config)
+
+
+if DEBUG:
+    LOGGER = logging.getLogger(__name__)
+    setup_logging()
 
 
 class WeatherData:
@@ -119,13 +133,13 @@ class WeatherData:
             sunrise = day["sunrise"]
             is_day = sunrise <= now < sunset
             if DEBUG:
-                logging.info("is_day: %s", is_day)
-                logging.info("sunrise <= %s", sunrise <= now)
-                logging.info("sunset < : %s", now < sunset)
-                logging.info("sunrise: %s", sunrise)
-                logging.info("sunset: %s", sunset)
-                logging.info("now: %s", now)
-                logging.info("mode 1: %s", self.daymode)
+                LOGGER.debug("is_day: %s", is_day)
+                LOGGER.debug("sunrise <= %s", sunrise <= now)
+                LOGGER.debug("sunset < : %s", now < sunset)
+                LOGGER.debug("sunrise: %s", sunrise)
+                LOGGER.debug("sunset: %s", sunset)
+                LOGGER.debug("now: %s", now)
+                LOGGER.debug("mode 1: %s", self.daymode)
             if i == 0:
                 # week_day = "Current"
                 if not is_day:
@@ -134,7 +148,7 @@ class WeatherData:
             else:
                 self.daymode = True
             if DEBUG:
-                logging.info("mode 2: %s", self.daymode)
+                LOGGER.debug("mode 2: %s", self.daymode)
             self.icons = self.get_icons(ICON_DIR, self.bg, self.daymode)
             condition = self.icons[day["weather"][0]["description"]]
             icon_image = Image.open(condition).convert("RGBA")

@@ -1,12 +1,13 @@
 import time
 import os
 import subprocess
+import json
 from flask import Flask, request
 from flask_cors import CORS
 import ink_display as ink
-import logging
+import logging.config
 from PIL import Image
-from assets.tools.forecast_builder.WeatherData import WeatherData
+from WeatherData import WeatherData
 
 
 app = Flask(__name__)
@@ -19,6 +20,19 @@ font = "Font.ttc"
 wd = WeatherData()
 
 DEBUG = True
+
+
+def setup_logging() -> None:
+    config_file = "logging.json"
+    with open(config_file) as f:
+        config = json.load(f)
+    logging.config.dictConfig(config)
+
+
+if DEBUG:
+    LOGGER = logging.getLogger(__name__)
+    setup_logging()
+    LOGGER.info("Logger started")
 
 
 @app.route("/test", methods=["GET"])
@@ -41,7 +55,7 @@ def test() -> str:
         ink.draw_text(
             (5, 30), text="world", font=font, size=16, color="#FF0000", draw=draw
         )
-        logging.info("drawing draw image")
+        LOGGER.info("drawing draw image")
         draw.line([(5, 170), (80, 245)], fill="#0000FF")
         ink.display_draw(ink.draw_image)
         time.sleep(5)
@@ -67,7 +81,7 @@ def test() -> str:
         clean(sleep=True)
 
     except IOError as e:
-        logging.info(e)
+        LOGGER.exception(e)
     return "Success"
 
 
@@ -89,18 +103,18 @@ def display_text() -> str:
             px_total = len(text) * px
             pos = (pos[0] - px_total / 4, pos[1] - px / 2.66)
         if DEBUG:
-            logging.info("Displaying text: %s", text)
-            logging.info("Displaying color: %s", color)
-            logging.info("Displaying position: %s", pos)
-            logging.info("Displaying size: %s", size)
-            logging.info("Displaying center: %s", center)
+            LOGGER.info("Displaying text: %s", text)
+            LOGGER.info("Displaying color: %s", color)
+            LOGGER.info("Displaying position: %s", pos)
+            LOGGER.info("Displaying size: %s", size)
+            LOGGER.info("Displaying center: %s", center)
         # draw_image = ink.blank_image()
         draw = ink.draw(ink.draw_image)
         ink.draw_text(pos, text=text, font=font,
                       size=size, color=color, draw=draw)
         # ink.display_draw(ink.draw_image)
     except IOError as e:
-        return logging.info(e)
+        return LOGGER.info(e)
     return "Success"
 
 
@@ -140,7 +154,7 @@ def display_upload_image() -> str:
     clean(False)
     if request.method == "GET":
         if DEBUG:
-            logging.info("Displaying image: %s", image)
+            LOGGER.info("Displaying image: %s", image)
     if request.method == "POST":
         r = request.files["image"]
         image_name = r.filename
@@ -151,7 +165,7 @@ def display_upload_image() -> str:
         post_image.save(save_loc)
         image = save_loc
         if DEBUG:
-            logging.info("Displaying image from POST: %s", image_name)
+            LOGGER.info("Displaying image from POST: %s", image_name)
     ink.display_image(image)
     ink.sleep()
 

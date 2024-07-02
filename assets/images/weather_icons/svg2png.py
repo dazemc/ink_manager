@@ -1,6 +1,8 @@
-from cairosvg import svg2png
+"""SVG to PNG conversion"""
 import os
 import sys
+from cairosvg import svg2png
+
 
 CWD = os.getcwd()
 ARG = sys.argv[1]

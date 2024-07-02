@@ -1,4 +1,4 @@
-from assets.tools.forecast_builder.WeatherData import WeatherData
+from WeatherData import WeatherData
 from ink_display import InkDisplay
 import RPi.GPIO as GPIO
 import os

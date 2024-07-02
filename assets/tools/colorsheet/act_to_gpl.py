@@ -1,15 +1,12 @@
+""" Adobe Photoshop "*.act" palette file conversion to GIMP "*.gpl" palette
+ format (which is also recognized by many other tools).
+
+ How to use:
+   ./act_to_gpl.py some_palette.act > some_palette.gpl
+
+ Code based on swatchbook/codecs/adobe_act.py from:
+ http://www.selapa.net/swatchbooker/"""
 #!/usr/bin/env python3
-#
-# Adobe Photoshop "*.act" palette file conversion to GIMP "*.gpl" palette
-# format (which is also recognized by many other tools).
-#
-# How to use:
-#   ./act_to_gpl.py some_palette.act > some_palette.gpl
-#
-# Code based on swatchbook/codecs/adobe_act.py from:
-# http://www.selapa.net/swatchbooker/
-
-
 import os.path
 import struct
 import sys
