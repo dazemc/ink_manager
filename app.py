@@ -37,12 +37,13 @@ if DEBUG:
 
 @app.route("/favicon.ico")
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico')
+    return send_from_directory(os.path.join(app.root_path, "static"), "favicon.ico")
 
 
 @app.route("/")
 def home():
     return "Nothing here yet"
+
 
 @app.route("/test", methods=["GET"])
 def test() -> str:
@@ -119,8 +120,7 @@ def display_text() -> str:
             LOGGER.info("Displaying center: %s", center)
         # draw_image = ink.blank_image()
         draw = ink.draw(ink.draw_image)
-        ink.draw_text(pos, text=text, font=font,
-                      size=size, color=color, draw=draw)
+        ink.draw_text(pos, text=text, font=font, size=size, color=color, draw=draw)
         # ink.display_draw(ink.draw_image)
     except IOError as e:
         return LOGGER.info(e)
@@ -151,8 +151,7 @@ def get_ip() -> str:
     ).decode("utf-8")
     clean(False)
     draw = ink.draw(ink.draw_image)
-    ink.draw_text((200, 240), text=ip, font=font,
-                  size=64, color="#000000", draw=draw)
+    ink.draw_text((200, 240), text=ip, font=font, size=64, color="#000000", draw=draw)
     ink.display_draw(ink.draw_image)
     ink.sleep()
     return ip

@@ -8,7 +8,7 @@ GPIO.setup(24, GPIO.IN)
 busy = GPIO.input(24)
 cwd = os.getcwd()
 
-if busy == 1:
+if busy == 0:
     wd = WeatherData()
     ink = InkDisplay()
     ink.init()

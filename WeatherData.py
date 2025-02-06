@@ -65,6 +65,7 @@ class WeatherData:
             daytime = "DAY"
         else:
             daytime = "NIGHT"
+
         return {
             "clear sky": f"{icon_dir}{background}{daytime} clear sky.png",
             # clouds
@@ -149,8 +150,11 @@ class WeatherData:
                 self.daymode = True
             if DEBUG:
                 LOGGER.debug("mode 2: %s", self.daymode)
+            weather = day["weather"][0]["description"]
+            if "snow" in weather:
+                weather = "snow"
             self.icons = self.get_icons(ICON_DIR, self.bg, self.daymode)
-            condition = self.icons[day["weather"][0]["description"]]
+            condition = self.icons[weather]
             icon_image = Image.open(condition).convert("RGBA")
             w, h = icon_image.size
             # used to set origin as center bottom
