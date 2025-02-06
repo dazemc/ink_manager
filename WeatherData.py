@@ -1,8 +1,9 @@
 """Retrieve weather data from open weather api and produce a forecast image
 
-    Returns:
-        None: ./assets/images/weather_forecast/forecast.png
-    """
+Returns:
+    None: ./assets/images/weather_forecast/forecast.png
+"""
+
 import os
 from datetime import datetime, timedelta
 import logging.config
@@ -27,10 +28,8 @@ CENTER = (CENTER_WIDTH, CENTER_HEIGHT)
 SPACING = 8
 FONT_SIZE_HEADER = 18
 FONT_SIZE_SUB = 22
-FONT_HEADER = ImageFont.truetype(
-    CWD + "/assets/fonts/Font.ttc", FONT_SIZE_HEADER)
-FONT_SUB = ImageFont.truetype(
-    CWD + "/assets/fonts/Helvetica.ttc", FONT_SIZE_SUB)
+FONT_HEADER = ImageFont.truetype(CWD + "/assets/fonts/Font.ttc", FONT_SIZE_HEADER)
+FONT_SUB = ImageFont.truetype(CWD + "/assets/fonts/Helvetica.ttc", FONT_SIZE_SUB)
 
 
 def setup_logging() -> None:
@@ -86,7 +85,8 @@ class WeatherData:
             "tornado": f"{icon_dir}{background}Air.png",
             "thunderstorm": f"{icon_dir}{background}{daytime} thunderstorm.png",
             # snow
-            # TODO: all snow icons are same so parse instead of assign
+            "snow": f"{icon_dir}{background}{daytime} snow.png",
+            "light snow": f"{icon_dir}{background}{daytime} snow.png",
             # rain
             "light rain": f"{icon_dir}{background}{daytime} shower rain.png",
             "moderate rain": f"{icon_dir}{background}{daytime} shower rain.png",
@@ -190,8 +190,9 @@ class WeatherData:
             forecast_image.save(save_dir)
 
     def get_coord(self) -> tuple:
-        url = f"""http://api.openweathermap.org/geo/1.0/direct?q={
-            self.city_name},{self.state_code},{self.cc}&appid={self.api}"""
+        url = f"""http://api.openweathermap.org/geo/1.0/direct?q={self.city_name},{
+            self.state_code
+        },{self.cc}&appid={self.api}"""
         resp = requests.get(url, timeout=60)
         return (resp.json()[0]["lat"], resp.json()[0]["lon"])
 
@@ -199,7 +200,8 @@ class WeatherData:
         lat = coord[0]
         lon = coord[1]
         url = f"""https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={
-            lon}&exclude={self.exclude}&appid={self.api}&units={self.unit}"""
+            lon
+        }&exclude={self.exclude}&appid={self.api}&units={self.unit}"""
         resp = requests.get(url, timeout=60)
         return resp.json()["daily"]
 
@@ -211,15 +213,12 @@ class WeatherData:
             response[i]["dt"] = datetime.fromtimestamp(int(response[i]["dt"])).strftime(
                 "%m/%d"
             )
-            response[i]["sunrise"] = datetime.fromtimestamp(
-                int(response[i]["sunrise"]))
-            response[i]["sunset"] = datetime.fromtimestamp(
-                int(response[i]["sunset"]))
+            response[i]["sunrise"] = datetime.fromtimestamp(int(response[i]["sunrise"]))
+            response[i]["sunset"] = datetime.fromtimestamp(int(response[i]["sunset"]))
             response[i]["moonrise"] = datetime.fromtimestamp(
                 int(response[i]["moonrise"])
             )
-            response[i]["moonset"] = datetime.fromtimestamp(
-                int(response[i]["moonset"]))
+            response[i]["moonset"] = datetime.fromtimestamp(int(response[i]["moonset"]))
             response[i]["dew_point"] = int(
                 (float(response[i]["dew_point"]) - 273.15) * 1.8 + 32
             )
