@@ -10,6 +10,7 @@ import logging.config
 import json
 import requests
 from PIL import Image, ImageDraw, ImageFont
+from dotenv import load_dotenv
 
 # Test/Debug
 DEBUG = False
@@ -32,6 +33,8 @@ FONT_SIZE_SUB = 22
 FONT_HEADER = ImageFont.truetype(CWD + "/assets/fonts/Font.ttc", FONT_SIZE_HEADER)
 FONT_SUB = ImageFont.truetype(CWD + "/assets/fonts/Helvetica.ttc", FONT_SIZE_SUB)
 
+load_dotenv()
+
 
 def setup_logging() -> None:
     config_file = "logging.json"
@@ -51,7 +54,7 @@ class WeatherData:
         self.cc = "US"
         self.state_code = "wa"
         self.city_name = "enumclaw"
-        self.api = os.environ["OPEN_WEATHER_API"]
+        self.api = os.getenv("OPEN_WEATHER_API")
         self.exclude = "hourly, minutely"
         self.unit = "standard"
         self.bg = "light/"
