@@ -8,7 +8,9 @@ import json
 from PIL import Image, ImageDraw, ImageFont
 
 LOGGER = logging.getLogger(__name__)
-config_file = "logging.json"
+file_path = os.path.abspath(__file__)
+cwd = os.path.dirname(file_path)
+config_file = f"{cwd}/logging.json"
 with open(config_file) as f:
     config = json.load(f)
 logging.config.dictConfig(config)

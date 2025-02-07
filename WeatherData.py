@@ -17,7 +17,8 @@ SUNSET_TEST = False
 SUNSET_DELTA = timedelta(hours=15)
 
 
-CWD = os.getcwd()
+FILE_PATH = os.path.abspath(__file__)
+CWD = os.path.dirname(FILE_PATH)
 ICON_DIR = CWD + "/assets/images/weather_icons/"
 FORECAST_DIR = CWD + "/assets/images/weather_forecast/"
 WIDTH = 800

@@ -6,8 +6,9 @@ import os
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(24, GPIO.IN)
 busy = GPIO.input(24)
-cwd = os.getcwd()
-
+file_path = os.path.abspath(__file__)
+cwd = os.path.dirname(file_path)
+print(cwd)
 if busy == 0:
     wd = WeatherData()
     ink = InkDisplay()
