@@ -2,16 +2,13 @@ import time
 import os
 import subprocess
 import json
-from flask import Flask, request, send_from_directory
-from flask_cors import CORS
 import ink_display as ink
 import logging.config
 from PIL import Image
 from WeatherData import WeatherData
+from fastapi import FastAPI
 
-
-app = Flask(__name__)
-CORS(app)
+app = FastAPI()
 logging.basicConfig(level=logging.DEBUG)
 ink = ink.InkDisplay()
 cwd = os.getcwd()
@@ -35,17 +32,17 @@ if DEBUG:
     LOGGER.info("Logger started")
 
 
-@app.route("/favicon.ico")
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, "static"), "favicon.ico")
+# @app.route("/favicon.ico")
+# def favicon():
+#     return send_from_directory(os.path.join(app.root_path, "static"), "favicon.ico")
 
 
-@app.route("/")
+@app.get("/")
 def home():
     return "Nothing here yet"
 
 
-@app.route("/test", methods=["GET"])
+@app.get("/test")
 def test() -> str:
     try:
         # INIT/CLEAR
@@ -95,7 +92,7 @@ def test() -> str:
     return "Success"
 
 
-@app.route("/text", methods=["GET"])
+@app.get("/text")
 def display_text() -> str:
     """Creates text on an image
 
@@ -127,7 +124,7 @@ def display_text() -> str:
     return "Success"
 
 
-@app.route("/display", methods=["GET"])
+@app.get("/display")
 def display() -> str:
     ink.init()
     ink.display_draw(ink.draw_image)
@@ -135,13 +132,13 @@ def display() -> str:
     return "Success"
 
 
-@app.route("/reset", methods=["GET"])
+@app.get("/reset")
 def reset() -> str:
     ink.draw_image = ink.blank_image()
     return "Success"
 
 
-@app.route("/ip", methods=["GET"])
+@app.get("/ip")
 def get_ip() -> str:
     ip = subprocess.check_output(
         [
@@ -157,30 +154,30 @@ def get_ip() -> str:
     return ip
 
 
-@app.route("/upload_image", methods=["GET", "POST"])
-def display_upload_image() -> str:
-    clean(False)
-    if request.method == "GET":
-        if DEBUG:
-            LOGGER.info("Displaying image: %s", image)
-    if request.method == "POST":
-        r = request.files["image"]
-        image_name = r.filename
-        post_image = Image.open(r)
-        save_loc = f"{cwd}/assets/images/upload/{image_name}"
-        if os.path.exists(save_loc):
-            os.remove(save_loc)
-        post_image.save(save_loc)
-        image = save_loc
-        if DEBUG:
-            LOGGER.info("Displaying image from POST: %s", image_name)
-    ink.display_image(image)
-    ink.sleep()
+# @app.get("/upload_image", methods=["GET", "POST"])
+# def display_upload_image() -> str:
+#     clean(False)
+#     if request.method == "GET":
+#         if DEBUG:
+#             LOGGER.info("Displaying image: %s", image)
+#     if request.method == "POST":
+#         r = request.files["image"]
+#         image_name = r.filename
+#         post_image = Image.open(r)
+#         save_loc = f"{cwd}/assets/images/upload/{image_name}"
+#         if os.path.exists(save_loc):
+#             os.remove(save_loc)
+#         post_image.save(save_loc)
+#         image = save_loc
+#         if DEBUG:
+#             LOGGER.info("Displaying image from POST: %s", image_name)
+#     ink.display_image(image)
+#     ink.sleep()
+#
+#     return "Success"
 
-    return "Success"
 
-
-@app.route("/update_weather", methods=["GET"])
+@app.get("/update_weather")
 def update_weather():
     clean(False)
     wd.get_response()
@@ -190,7 +187,7 @@ def update_weather():
     return "Success"
 
 
-@app.route("/clear", methods=["GET"])
+@app.get("/clear")
 def clean(sleep: bool = True) -> str:
     ink.init()
     reset()
@@ -198,7 +195,3 @@ def clean(sleep: bool = True) -> str:
     if sleep:
         ink.sleep()
     return "Success"
-
-
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=80)

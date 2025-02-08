@@ -1,13 +1,16 @@
 import sys
 import os
-from globals import *
 import logging.config
 from lib import epd7in3f
 import time
 import json
 from PIL import Image, ImageDraw, ImageFont
 
+IMG_DIR = "assets/images"
+FONT_DIR = "assets/fonts"
+LIB_DIR = "lib/"
 LOGGER = logging.getLogger(__name__)
+
 file_path = os.path.abspath(__file__)
 cwd = os.path.dirname(file_path)
 config_file = f"{cwd}/logging.json"
