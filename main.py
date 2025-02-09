@@ -166,9 +166,9 @@ async def display_upload_image(file: UploadFile = File(...)):
     file_loc = f"{upload_dir}/{file.filename}"
     with open(file_loc, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
-    # image_bytes = await file.read()
-    # image = Image.open(file.file)
-    ink.display_image(f"uploads/{file.filename}")
+    image_bmp = file.filename.split(".")[0] + ".bmp"
+    ink.convert_24bmp(file_loc, f"{upload_dir}/{image_bmp}")
+    ink.display_image(f"uploads/{image_bmp}")
     if DEBUG:
         LOGGER.info("Displaying image from POST: %s", file.filename)
     ink.sleep()

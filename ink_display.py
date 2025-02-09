@@ -66,3 +66,16 @@ class InkDisplay:
     def display_draw(self, image) -> None:
         LOGGER.info("displaying draw image")
         self.ink.display(self.ink.getbuffer(image))
+
+    def convert_24bmp(self, image_path, output_path=False):
+        try:
+            img = Image.open(image_path)
+            img = img.convert("RGB")
+            if output_path is False:
+                img.save(image_path, "BMP")
+            else:
+                img.save(output_path, "BMP")
+        except FileNotFoundError:
+            LOGGER.error(f"Image file not found at {image_path}")
+        except Exception as e:
+            LOGGER.error(f"Unhandled error: {e}")
