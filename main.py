@@ -1,12 +1,15 @@
 import time
 import os
+import io
 import subprocess
 import json
 import ink_display as ink
 import logging.config
+import shutil
 from PIL import Image
 from WeatherData import WeatherData
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import JSONResponse
 from models import Text
 
 app = FastAPI()
@@ -15,6 +18,8 @@ ink = ink.InkDisplay()
 cwd = os.getcwd()
 image = r"/assets/images/test/raspilogo.bmp"
 font = "Font.ttc"
+upload_dir = "./assets/images/uploads"
+os.makedirs(upload_dir, exist_ok=True)
 wd = WeatherData()
 
 DEBUG = True
@@ -155,27 +160,22 @@ def get_ip() -> str:
     return ip
 
 
-# @app.get("/upload_image", methods=["GET", "POST"])
-# def display_upload_image() -> str:
-#     clean(False)
-#     if request.method == "GET":
-#         if DEBUG:
-#             LOGGER.info("Displaying image: %s", image)
-#     if request.method == "POST":
-#         r = request.files["image"]
-#         image_name = r.filename
-#         post_image = Image.open(r)
-#         save_loc = f"{cwd}/assets/images/upload/{image_name}"
-#         if os.path.exists(save_loc):
-#             os.remove(save_loc)
-#         post_image.save(save_loc)
-#         image = save_loc
-#         if DEBUG:
-#             LOGGER.info("Displaying image from POST: %s", image_name)
-#     ink.display_image(image)
-#     ink.sleep()
-#
-#     return "Success"
+@app.post("/upload_image")
+async def display_upload_image(file: UploadFile = File(...)):
+    clean(False)
+    file_loc = f"{upload_dir}/{file.filename}"
+    with open(file_loc, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    # image_bytes = await file.read()
+    # image = Image.open(file.file)
+    ink.display_image(f"uploads/{file.filename}")
+    if DEBUG:
+        LOGGER.info("Displaying image from POST: %s", file.filename)
+    ink.sleep()
+
+    return JSONResponse(
+        content={"filename": file.filename, "message": "File uploaded and displaying"}
+    )
 
 
 @app.get("/update_weather")
