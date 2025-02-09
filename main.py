@@ -7,6 +7,7 @@ import logging.config
 from PIL import Image
 from WeatherData import WeatherData
 from fastapi import FastAPI
+from models import Text
 
 app = FastAPI()
 logging.basicConfig(level=logging.DEBUG)
@@ -92,19 +93,19 @@ def test() -> str:
     return "Success"
 
 
-@app.get("/text")
-def display_text() -> str:
-    """Creates text on an image
+@app.post("/text")
+async def display_text(contents: Text) -> str:
+    """Creates text on an image to render, uses hex color values.
 
     Returns:
         str: "Success"
     """
     try:
-        text = str(request.args["text"])
-        color = "#" + str(request.args["color"])
-        pos = tuple([int(i) for i in str(request.args["pos"]).split(",")])
-        size = int(request.args["size"])
-        center = str(request.args["center"]).lower()
+        text = contents.text
+        color = "#" + contents.color
+        pos = tuple([int(i) for i in contents.pos.split(",")])
+        size = contents.size
+        center = bool(contents.center)
         if center != "false":
             px = size / 72 * 96
             px_total = len(text) * px
