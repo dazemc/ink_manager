@@ -1,0 +1,11 @@
+[Unit]
+Description=E-Paper Server
+After=network.target
+
+[Service]
+ExecStart=/home/daze/git/ink_manager/start.sh
+WorkingDirectory=/home/daze/git/ink_manager/
+RestortSec=3
+
+[Install]
+WantedBy=multi-user.target
