@@ -6,7 +6,9 @@ import json
 import ink_display as ink
 import logging.config
 import shutil
-from PIL import Image
+import requests
+import utils
+from PIL import Image, ImageFont
 from WeatherData import WeatherData
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
@@ -195,4 +197,39 @@ def clean(sleep: bool = True) -> str:
     ink.clear()
     if sleep:
         ink.sleep()
+    return "Success"
+
+
+@app.get("/quote")
+async def get_quote():
+    clean(False)
+    resp = requests.get("https://zenquotes.io/api/today")
+    data = resp.json()
+    quote = data[0]["q"]
+    author = "- " + data[0]["a"]
+    font_size = 32
+    author_size = font_size - 4
+    quote_font = f"./assets/fonts/{font}"
+    quote_pos = utils.center_text(quote, quote_font, font_size)
+    author_pos = utils.center_text(author, quote_font, author_size)
+    author_pos_offset = (author_pos[0], author_pos[1] + 72)
+    try:
+        color = "#000000"
+        draw = ink.draw(ink.draw_image)
+        ink.draw_text(
+            quote_pos, text=quote, font=font, size=font_size, color=color, draw=draw
+        )
+        ink.draw_text(
+            author_pos_offset,
+            text=author,
+            font=font,
+            size=author_size,
+            color=color,
+            draw=draw,
+        )
+        ink.display_draw(ink.draw_image)
+        ink.sleep()
+    except IOError as e:
+        print("IO ERROR")
+        return LOGGER.info(e)
     return "Success"
