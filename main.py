@@ -259,7 +259,6 @@ async def generate_wifi_qr():
     )
     psk = psk[psk.find("=") + 1 :]
     wifi = f"WIFI:S:{ssid};T:WPA;P:{psk};H:false;;"
-    print(wifi)
     qr = qrcode.make(wifi).convert("L")
     qr = qr.resize(
         (ink.height, ink.height), Image.Resampling.LANCZOS
@@ -276,3 +275,28 @@ async def generate_wifi_qr():
     canvas.paste(qr, offset_origin)
     ink.display_draw(ink.draw_image)
     ink.sleep()
+
+
+@app.get("/qr-code/ssh")
+async def generate_ssh_qr():
+    ssh_cmd = "cat /home/daze/.ssh/id_rsa.pub"
+    ssh = (
+        subprocess.check_output([cmd for cmd in ssh_cmd.split(" ")])
+        .decode("utf-8")
+        .strip()
+    )
+    qr_contents = f"SSH Key:{ssh}"
+    generate_qr(qr_contents)
+    ink.sleep()
+
+
+def generate_qr(contents):
+    clean(False)
+    qr = qrcode.make(contents).convert("L")
+    qr = qr.resize((ink.height, ink.height), Image.Resampling.LANCZOS)
+    image_width, image_height = qr.size
+    image_center = (image_width // 2, image_height // 2)
+    offset_origin = (ink.center[0] - image_center[0], ink.center[1] - image_center[1])
+    canvas = ink.draw_image
+    canvas.paste(qr, offset_origin)
+    ink.display_draw(ink.draw_image)
