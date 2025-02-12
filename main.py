@@ -285,8 +285,8 @@ async def generate_ssh_qr():
         .decode("utf-8")
         .strip()
     )
-    qr_contents = f"SSH Key:{ssh}"
-    generate_qr(qr_contents)
+    # qr_contents = f"SSH Key:{ssh}"
+    generate_qr(ssh)
     ink.sleep()
 
 
