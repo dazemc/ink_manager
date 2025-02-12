@@ -11,6 +11,13 @@ def center_text(text, font, font_size):
     bbox = draw.textbbox((0, 0), text, font=font)
     text_width = bbox[2] - bbox[0]
     text_height = bbox[3] - bbox[1]
+    if text_width > 760:
+        resize_text(text, bbox)
     x = (800 - text_width) // 2
     y = (400 - text_height) // 2
     return (x, y)
+
+
+def resize_text(text, bbox_image):
+    # TODO
+    pass

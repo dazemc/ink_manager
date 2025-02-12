@@ -8,6 +8,7 @@ import logging.config
 import shutil
 import requests
 import utils
+import qrcode
 from PIL import Image, ImageFont
 from WeatherData import WeatherData
 from fastapi import FastAPI, File, UploadFile
@@ -233,3 +234,45 @@ async def get_quote():
         print("IO ERROR")
         return LOGGER.info(e)
     return "Success"
+
+
+@app.get("/qr-code/wifi")
+async def generate_wifi_qr():
+    clean(False)
+    ssid = (
+        subprocess.check_output(
+            [
+                "iwgetid",
+                "-r",
+            ]
+        )
+        .decode("utf-8")
+        .strip()
+    )
+    # This will not work if you let rpi imager populate the psk because it hashes it,
+    # however, if you manually enter the psk in the imager it will populate the conf with plaintext.
+    get_psk = "sh ./scripts/get_psk.sh"
+    psk = (
+        subprocess.check_output([cmd for cmd in get_psk.split(" ")])
+        .decode("utf-8")
+        .strip()
+    )
+    psk = psk[psk.find("=") + 1 :]
+    wifi = f"WIFI:S:{ssid};T:WPA;P:{psk};H:false;;"
+    print(wifi)
+    qr = qrcode.make(wifi).convert("L")
+    qr = qr.resize(
+        (ink.height, ink.height), Image.Resampling.LANCZOS
+    )  # contain the qr code using the dimensions of the screen
+    # qr.show()
+    # qr.save("wifi.png")
+    image_width, image_height = qr.size
+    image_center = (image_width // 2, image_height // 2)
+    offset_origin = (ink.center[0] - image_center[0], ink.center[1] - image_center[1])
+    canvas = ink.draw_image
+    # print(f"{qr=}")
+    # print(f"{image_center=}")
+    # print(qr.mode, canvas.mode)
+    canvas.paste(qr, offset_origin)
+    ink.display_draw(ink.draw_image)
+    ink.sleep()

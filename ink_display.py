@@ -1,3 +1,4 @@
+# TODO: Merge into epd7 lib
 import sys
 import os
 import logging.config
@@ -23,6 +24,10 @@ class InkDisplay:
     def __init__(self) -> None:
         self.ink = epd7in3f.EPD()
         self.draw_image = self.blank_image()
+        self.width = 800
+        self.height = 480
+        self.center = (self.width // 2, self.height // 2)
+        self.is_clear = False
 
     def init(self) -> None:
         LOGGER.info("initialising")
@@ -30,9 +35,15 @@ class InkDisplay:
             sys.path.append(LIB_DIR)
         self.ink.init()
 
-    def clear(self) -> None:
+    def clear(self, force=False) -> None:
         LOGGER.info("clearing screen")
-        self.ink.Clear()
+        if self.is_clear and not force:
+            return
+        try:
+            self.ink.Clear()
+            self.is_clear = True
+        except Exception as e:
+            f"Unexpected error while trying to clear screen: {e}"
 
     def sleep(self) -> None:
         LOGGER.info("putting to sleep")
@@ -43,6 +54,7 @@ class InkDisplay:
         epd7in3f.epdconfig.module_exit()
 
     def display_image(self, image) -> None:
+        self.is_clear = False
         LOGGER.info("displaying image")
         Himage = Image.open(os.path.join(IMG_DIR, image))
         self.ink.display(self.ink.getbuffer(Himage))
@@ -55,6 +67,7 @@ class InkDisplay:
         return ImageDraw.Draw(image)
 
     def draw_text(self, location, text, font, size, color, draw) -> None:
+        self.is_clear = False
         LOGGER.info("drawing text to draw image: %s", text)
         draw.text(
             (location),
@@ -64,6 +77,7 @@ class InkDisplay:
         )
 
     def display_draw(self, image) -> None:
+        self.is_clear = False
         LOGGER.info("displaying draw image")
         self.ink.display(self.ink.getbuffer(image))
 
