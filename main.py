@@ -211,15 +211,30 @@ async def get_quote():
     font_size = 32
     author_size = font_size - 4
     quote_font = f"./assets/fonts/{font}"
-    quote_pos = utils.center_text(quote, quote_font, font_size)
-    author_pos = utils.center_text(author, quote_font, author_size)
+    quote_process = utils.center_text(quote, quote_font, font_size)
+    quote_pos = quote_process[0]
+    quote_lines = quote_process[1]
+    quote_height = quote_process[2]
+    author_process = utils.center_text(author, quote_font, author_size)
+    author = author_process[1][0]
+    author_pos = author_process[0]
     author_pos_offset = (author_pos[0], author_pos[1] + 72)
+
+    x = quote_pos[0]
+    y = quote_pos[1]
+    for line in quote_lines:
+        try:
+            color = "#000000"
+            draw = ink.draw(ink.draw_image)
+
+            ink.draw_text(
+                (x, y), text=line, font=font, size=font_size, color=color, draw=draw
+            )
+            y += quote_height
+        except IOError as e:
+            print("IO ERROR")
+            return LOGGER.info(e)
     try:
-        color = "#000000"
-        draw = ink.draw(ink.draw_image)
-        ink.draw_text(
-            quote_pos, text=quote, font=font, size=font_size, color=color, draw=draw
-        )
         ink.draw_text(
             author_pos_offset,
             text=author,
@@ -228,8 +243,10 @@ async def get_quote():
             color=color,
             draw=draw,
         )
+
         ink.display_draw(ink.draw_image)
         ink.sleep()
+
     except IOError as e:
         print("IO ERROR")
         return LOGGER.info(e)
