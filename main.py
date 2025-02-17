@@ -1,6 +1,5 @@
 import time
 import os
-import io
 import subprocess
 import json
 import ink_display as ink
