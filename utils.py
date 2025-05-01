@@ -7,9 +7,11 @@ def center_text(text, font, font_size: int):
     except OSError:
         image_font = ImageFont.load_default()
     boundaries = get_boundaries(text, image_font)
-    if boundaries[0] > 720:
-        text = resize_text(text, image_font)
+    if boundaries[0] > 740:
+        text = resize_text(text, image_font, 740)
         boundaries = get_boundaries(text, image_font)
+        print(text)
+        print(boundaries)
     x = (800 - boundaries[0]) // 2
     y = (480 - boundaries[1]) // 2
     return ((x, y), text.splitlines(), boundaries[1] // 2)
@@ -24,32 +26,26 @@ def get_boundaries(text, image_font):
     return text_width, text_height
 
 
-def resize_text(text, font):
-    image = Image.new("RGB", (800, 480), "white")
-    draw = ImageDraw.Draw(image)
+def resize_text(text, font, max_width):
     words = text.split()
-    leftover_words = text.split()
-    line = ""
+    if not words:
+        return ""
     lines = []
-    for word in words:
-        bbox = draw.textbbox((0, 0), line, font=font)
-        line_width = bbox[2] - bbox[0]
-        if line_width > 720:
-            lines.append(line + "\n")
-            line = ""
-        line += word + " "
-        leftover_words.pop(0)
-    for word in leftover_words:
-        line += word + " "
-    lines.append(line)
-    quote = ""
-    for line in lines:
-        quote += line
-    return quote
+    current_line = words[0]
+    for word in words[1:]:
+        test_line = current_line + " " + word
+        test_line_width, _ = get_boundaries(test_line, font)
+        if test_line_width <= max_width:
+            current_line = test_line
+        else:
+            lines.append(current_line)
+            current_line = word
+    lines.append(current_line)
+    return "\n".join(lines)
 
 
 # text = "Duty makes us do things well, but love makes us do them beautifully."
-# font = "./assets/fonts/Font.ttc"
-# font_size = 36
+# font = "./assets/fonts/Steelworks.ttf"
+# font_size = 72
 # image = center_text(text, font, font_size)
 # print(image)
