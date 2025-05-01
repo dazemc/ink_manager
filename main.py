@@ -206,9 +206,10 @@ async def get_quote():
     resp = requests.get("https://zenquotes.io/api/today")
     data = resp.json()
     quote = data[0]["q"]
+    LOGGER.info(quote)
     author = "- " + data[0]["a"]
-    font_size = 32
-    author_size = font_size - 4
+    font_size = 48
+    author_size = 36
     quote_font = f"./assets/fonts/{font}"
     quote_process = utils.center_text(quote, quote_font, font_size)
     quote_pos = quote_process[0]
@@ -217,12 +218,13 @@ async def get_quote():
     author_process = utils.center_text(author, quote_font, author_size)
     author = author_process[1][0]
     author_pos = author_process[0]
-    author_pos_offset = (author_pos[0], author_pos[1] + 72)
-
+    author_pos_offset = (author_pos[0] + 96, author_pos[1] + 96)
+    LOGGER.info(quote_lines)
     x = quote_pos[0]
     y = quote_pos[1]
     for line in quote_lines:
         try:
+            LOGGER.info(line)
             color = "#000000"
             draw = ink.draw(ink.draw_image)
 
