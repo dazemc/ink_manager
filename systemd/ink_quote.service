@@ -1,0 +1,6 @@
+[Unit]
+Description=curl command to local server running ink manger
+
+[Service]
+Type=oneshot
+ExecStart=curl 0.0.0.0:8000/quote
