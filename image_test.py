@@ -2,7 +2,7 @@ import requests
 import os
 
 cwd = os.getcwd()
-image_name = "forecast2.png"
+image_name = "raspi"
 image = cwd + f"/assets/images/test/{image_name}"
 test_url = "http://192.168.0.213/upload_image"
 

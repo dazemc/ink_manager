@@ -1,0 +1,9 @@
+[Unit]
+Description=Timer for ink display quote on the :30 mark
+
+[Timer]
+OnCalender=*:30
+Persisent=true
+
+[Install]
+WantedBy=timers.target

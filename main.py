@@ -18,7 +18,7 @@ app = FastAPI()
 logging.basicConfig(level=logging.DEBUG)
 ink = ink.InkDisplay()
 cwd = os.getcwd()
-image = r"/assets/images/test/raspilogo.bmp"
+image = "assets/images/test/raspilogo.bmp"
 font = "Inktype.ttf"
 upload_dir = "./assets/images/uploads"
 os.makedirs(upload_dir, exist_ok=True)
@@ -57,9 +57,9 @@ def test() -> str:
         clean(sleep=False)
 
         # DISPLAY IMAGE
-        ink.display_image(image)
-        time.sleep(5)
-        ink.clear()
+        # ink.display_image(image)
+        # time.sleep(5)
+        # ink.clear()
 
         # CREATE DRAW
         ink.draw_image = ink.blank_image()

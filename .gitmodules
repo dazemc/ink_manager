@@ -1,3 +1,4 @@
 [submodule "lib"]
 	path = lib
-	url = https://github.com/dazemc/e-paper-lib.git
+  url = git@github.com:dazemc/ink_manager.git
+  branch = master
