@@ -3,7 +3,7 @@ Description=E-Paper Server
 After=network.target
 
 [Service]
-EnvironmentFile=%/GitHub/ink_manager/.env
+EnvironmentFile=%h/GitHub/ink_manager/.env
 ExecStart=%h/GitHub/ink_manager/start.sh
 WorkingDirectory=%h/GitHub/ink_manager/
 RestartSec=3
