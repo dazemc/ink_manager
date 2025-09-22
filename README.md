@@ -21,50 +21,28 @@ This project provides a **FastAPI** server to interact with an e-ink display, en
    cd ink_manager
    ```
 
-2. **Set Up a Virtual Environment** (recommended):
+2. **Set Up using uv** (recommended):
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   uv sync
    ```
 
-3. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Configure Environment Variables**:
-   - Set the `OPEN_WEATHER_API` key for weather functionality:
+3. **Configure Environment Variables**:
+   - Set the `OPEN_WEATHER_API` key for weather functionality in .env:
      ```bash
-     export OPEN_WEATHER_API='your_openweathermap_api_key'  # On Windows: set OPEN_WEATHER_API=your_key
+     OPEN_WEATHER_API='your_openweathermap_api_key'
      ```
    - Obtain a free API key from [OpenWeatherMap](https://openweathermap.org/).
 
-5. **Set Up the E-Ink Display**:
-   - Install drivers and libraries for your e-ink hardware (e.g., Waveshare e-Paper).
-   - Ensure the `ink_display` library is compatible with your display model.
-
-6. **Run the Server**:
+5. **Run the Server**:
    ```bash
-   uvicorn app:app --host 0.0.0.0 --port 8000
+   ./start.sh
    ```
    - Access the API at `http://<device-ip>:8000`.
 
 ## Dependencies
 
-- `fastapi`: Web framework for the API server.
-- `python-multipart`: Handles file uploads.
-- `pillow`: Image manipulation for rendering and QR codes.
-- `requests`: Fetches data from external APIs (e.g., ZenQuotes).
-- `qrcode`: Generates QR codes for Wi-Fi and SSH.
-- `ink_display`: Custom library for e-ink display control (ensure compatibility with your hardware).
-- `WeatherData`: Custom library for weather data fetching and rendering.
-- `logging`: Configurable logging with `logging.json`.
-- `subprocess`: Executes shell commands (e.g., IP address, Wi-Fi PSK).
+Check uv.lock for full dependency list and versions.
 
-Install dependencies via:
-```bash
-pip install fastapi python-multipart pillow requests qrcode
-```
 
 ## API Endpoints
 
