@@ -2,7 +2,7 @@ import time
 import os
 import subprocess
 import json
-import ink_display as ink
+from lib import ink_display as ink
 import logging.config
 import shutil
 import requests
@@ -28,7 +28,7 @@ DEBUG = True
 
 
 def setup_logging() -> None:
-    config_file = "logging.json"
+    config_file = "./lib/logging.json"
     with open(config_file) as f:
         config = json.load(f)
     logging.config.dictConfig(config)
@@ -208,8 +208,8 @@ async def get_quote():
     quote = data[0]["q"]
     LOGGER.info(quote)
     author = "- " + data[0]["a"]
-    font_size = 48
-    author_size = 36
+    font_size = 56
+    author_size = 44
     quote_font = f"./assets/fonts/{font}"
     quote_process = utils.center_text(quote, quote_font, font_size)
     quote_pos = quote_process[0]
@@ -218,7 +218,7 @@ async def get_quote():
     author_process = utils.center_text(author, quote_font, author_size)
     author = author_process[1][0]
     author_pos = author_process[0]
-    author_pos_offset = (author_pos[0] + 96, author_pos[1] + 96)
+    author_pos_offset = (author_pos[0] + 172, author_pos[1] + 192)
     LOGGER.info(quote_lines)
     x = quote_pos[0]
     y = quote_pos[1]
