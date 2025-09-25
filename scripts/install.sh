@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
 function runUser {
   if [ ! -d ~/.config/systemd/user/ ]; then
@@ -7,21 +8,21 @@ function runUser {
     rm -rf ~/.config/systemd/user/*
     mkdir -p ~/.config/systemd/user/
   fi
-
-  cp -r ../systemd/user/* ~/.config/systemd/user/
+  cp -r "$SCRIPT_DIR"/../systemd/user/* ~/.config/systemd/user/
 }
 
-function runRoot {
+function runRoot() {
+  local SCRIPT_DIR
+  SCRIPT_DIR=$1
   if [ ! -d /opt/ink_manager/ ]; then
     mkdir /opt/ink_manager
   else
     rm -rf /opt/ink_manager/
     mkdir /opt/ink_manager/
   fi
-
-  cp -r ../* /opt/ink_manager/
-  cp ../.env /opt/ink_manager/.env
-  cp -r ../systemd/system/ink.service /etc/systemd/system/ink.service
+  cp -r "$SCRIPT_DIR"/../* /opt/ink_manager/
+  cp "$SCRIPT_DIR"/../.env /opt/ink_manager/.env
+  cp -r "$SCRIPT_DIR"/../systemd/system/ink.service /etc/systemd/system/ink.service
   cd /opt/ink_manager/
   "$HOME"/.local/bin/uv sync
   systemctl daemon-reload
@@ -29,7 +30,7 @@ function runRoot {
 
 function main {
   runUser
-  sudo bash -c "$(declare -f runRoot); runRoot"
+  sudo bash -c "$(declare -f runRoot); runRoot $SCRIPT_DIR"
 }
 
 main
