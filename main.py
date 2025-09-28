@@ -12,7 +12,7 @@ from PIL import Image, ImageFont
 from WeatherData import WeatherData
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
-from models import Text, Quote
+from models import Text, Quote, QuoteLine
 
 app = FastAPI()
 logging.basicConfig(level=logging.DEBUG)
@@ -214,7 +214,7 @@ async def get_quote():
     quote_font = f"./assets/fonts/{font}"
     quote_process: Quote = utils.center_text(quote, quote_font, font_size)
     quote_pos = quote_process.origin_coord
-    quote_lines = quote_process.quote_lines
+    quote_lines = quote_process.text_lines
     quote_height = quote_process.boundary_y
     author_process = utils.center_text(author, quote_font, author_size)
     author = author_process[1][0]
@@ -223,14 +223,14 @@ async def get_quote():
     LOGGER.info(quote_lines)
     x = quote_pos[0]
     y = quote_pos[1]
-    for line in quote_lines:
+    for quote_line: TextBoundaryLine in quote_lines:
         try:
             LOGGER.info(line)
             color = "#000000"
             draw = ink.draw(ink.draw_image)
 
             ink.draw_text(
-                (x, y), text=line, font=font, size=font_size, color=color, draw=draw
+                (x, y), text=quote_line.text, font=font, size=font_size, color=color, draw=draw
             )
             y += quote_height
         except IOError as e:

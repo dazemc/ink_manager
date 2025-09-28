@@ -1,8 +1,8 @@
 from PIL import Image, ImageDraw, ImageFont
-from models import Quote, QuoteLine
+from models import TextBoundary, TextBoundaryLine
 
 
-def center_text(text, font, font_size: int) -> Quote:
+def center_text(text, font, font_size: int) -> TextBoundary:
     try:
         image_font = ImageFont.truetype(font, font_size)
     except OSError:
@@ -11,25 +11,29 @@ def center_text(text, font, font_size: int) -> Quote:
     if boundaries[0] > 740:
         text = resize_text(text, image_font, 740)
         boundaries = get_boundaries(text, image_font)
-        print(text)
-        print(boundaries)
+    if boundaries[1] > 480:
+        # TODO: Dynamically resize text to fit
+        print("Warning, text boundaries may exceed the limits")
     x = int((800 - boundaries[0]) // 2)
     y = int((480 - boundaries[1]) // 2)
 
-    quote_lines = []
+    text_lines = []
     for line in text.splitlines:
         boundaries = get_boundaries(line, image_font)
-        quote_lines += QuoteLine(
-            boundary_y=int(boundaries[0] // 2),
-            boundary_x=int(boundaries[1] // 2),
+        text_lines += TextBoundaryLine(
+            boundary_x=int(boundaries[0] // 2),
+            boundary_y=int(boundaries[1] // 2),
             text=line,
         )
 
-    return Quote(
-        origin_coord=(x, y),
-        quote_lines=quote_lines,
-        boundary_y=int(boundaries[0] // 2),
-        boundary_x=int(boundaries[1] // 2),
+    return TextBoundary(
+        origin_coord=(
+            x,
+            y,
+        ),
+        text_lines=text_lines,
+        boundary_x=int(boundaries[0] // 2),
+        boundary_y=int(boundaries[1] // 2),
     )
 
 

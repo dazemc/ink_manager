@@ -9,14 +9,14 @@ class Text(BaseModel):
     center: bool
 
 
-class QuoteLine(BaseModel):
+class TextBoundaryLine(BaseModel):
     boundary_x: int
     boundary_y: int
     text: str
 
 
-class Quote(BaseModel):
+class TextBoundary(BaseModel):
     origin_coord: tuple[int, int]
-    quote_lines: list[QuoteLine]
+    text_lines: list[TextBoundaryLine]
     boundary_x: int
     boundary_y: int
