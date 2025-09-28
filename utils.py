@@ -1,7 +1,8 @@
 from PIL import Image, ImageDraw, ImageFont
+from models import Quote, QuoteLine
 
 
-def center_text(text, font, font_size: int):
+def center_text(text, font, font_size: int) -> Quote:
     try:
         image_font = ImageFont.truetype(font, font_size)
     except OSError:
@@ -12,9 +13,24 @@ def center_text(text, font, font_size: int):
         boundaries = get_boundaries(text, image_font)
         print(text)
         print(boundaries)
-    x = (800 - boundaries[0]) // 2
-    y = (480 - boundaries[1]) // 2
-    return ((x, y), text.splitlines(), boundaries[1] // 2)
+    x = int((800 - boundaries[0]) // 2)
+    y = int((480 - boundaries[1]) // 2)
+
+    quote_lines = []
+    for line in text.splitlines:
+        boundaries = get_boundaries(line, image_font)
+        quote_lines += QuoteLine(
+            boundary_y=int(boundaries[0] // 2),
+            boundary_x=int(boundaries[1] // 2),
+            text=line,
+        )
+
+    return Quote(
+        origin_coord=(x, y),
+        quote_lines=quote_lines,
+        boundary_y=int(boundaries[0] // 2),
+        boundary_x=int(boundaries[1] // 2),
+    )
 
 
 def get_boundaries(text, image_font):

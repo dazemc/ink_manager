@@ -12,7 +12,7 @@ from PIL import Image, ImageFont
 from WeatherData import WeatherData
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
-from models import Text
+from models import Text, Quote
 
 app = FastAPI()
 logging.basicConfig(level=logging.DEBUG)
@@ -206,15 +206,16 @@ async def get_quote():
     resp = requests.get("https://zenquotes.io/api/today")
     data = resp.json()
     quote = data[0]["q"]
+    quote = "Time is too slow for those who wait, too swift for those who fear, too long for those who grieve, too short for those who rejoice, but for those who love, time is eternity."
     LOGGER.info(quote)
     author = "- " + data[0]["a"]
     font_size = 56
     author_size = 44
     quote_font = f"./assets/fonts/{font}"
-    quote_process = utils.center_text(quote, quote_font, font_size)
-    quote_pos = quote_process[0]
-    quote_lines = quote_process[1]
-    quote_height = quote_process[2]
+    quote_process: Quote = utils.center_text(quote, quote_font, font_size)
+    quote_pos = quote_process.origin_coord
+    quote_lines = quote_process.quote_lines
+    quote_height = quote_process.boundary_y
     author_process = utils.center_text(author, quote_font, author_size)
     author = author_process[1][0]
     author_pos = author_process[0]
