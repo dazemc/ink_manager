@@ -267,6 +267,10 @@ async def random_fact():
     LOGGER.info(f"/random_fact response: {data}")
     fact = data["text"]
     LOGGER.info(f"Building image for random fact: {fact}")
+    fact_source = data["source"]
+    qr_source_img = qrcode.make(fact_source).convert("L")
+    qr_source_img = qr_source_img.resize((100, 100), Image.Resampling.LANCZOS)
+    qr_coord = Coord(x=ink.width - 110, y=ink.height - 110)
     font_size: int = 56
     fact_font: str = f"./assets/fonts/{font}"
     fact_boundary: TextBoundary = utils.center_text(
@@ -295,6 +299,8 @@ async def random_fact():
             print("IO ERROR")
             return LOGGER.error(e)
     try:
+        canvas = ink.draw_image
+        canvas.paste(qr_source_img, (qr_coord.x, qr_coord.y))
         ink.display_draw(ink.draw_image)
         ink.sleep()
 

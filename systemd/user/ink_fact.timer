@@ -1,0 +1,9 @@
+[Unit]
+Description=Timer for ink display random fact on the :15 mark
+
+[Timer]
+OnCalendar=*:15
+Persistent=true
+
+[Install]
+WantedBy=timers.target
