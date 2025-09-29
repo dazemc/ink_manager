@@ -1,8 +1,9 @@
 [Unit]
-Description=Timer for ink display random fact on the :15 mark
+Description=Timer for ink display random fact on the :15 and :45 mark
 
 [Timer]
 OnCalendar=*:15
+OnCalendar=*:45
 Persistent=true
 
 [Install]
