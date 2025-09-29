@@ -206,7 +206,7 @@ async def get_quote():
     resp: requests.Response = requests.get("https://zenquotes.io/api/today")
     data = resp.json()
     quote = str(data[0]["q"])
-    quote = "Time is too slow for those who wait, too swift for those who fear, too long for those who grieve, too short for those who rejoice, but for those who love, time is eternity."
+    # quote = "Time is too slow for those who wait, too swift for those who fear, too long for those who grieve, too short for those who rejoice, but for those who love, time is eternity."
     LOGGER.info(quote)
     author = "- " + str(data[0]["a"])
     font_size: int = 56
