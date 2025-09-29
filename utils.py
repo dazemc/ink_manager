@@ -1,8 +1,8 @@
 from PIL import Image, ImageDraw, ImageFont
-from models import TextBoundary, TextBoundaryLine
+from models import TextBoundary, TextBoundaryLine, Coord
 
 
-def center_text(text, font, font_size: int) -> TextBoundary:
+def center_text(text: str, font: str, font_size: int) -> TextBoundary:
     try:
         image_font = ImageFont.truetype(font, font_size)
     except OSError:
@@ -17,23 +17,26 @@ def center_text(text, font, font_size: int) -> TextBoundary:
     x = int((800 - boundaries[0]) // 2)
     y = int((480 - boundaries[1]) // 2)
 
-    text_lines = []
-    for line in text.splitlines:
+    text_lines: list[TextBoundaryLine] = []
+    max_line_height = 0
+    for line in text.splitlines():
         boundaries = get_boundaries(line, image_font)
-        text_lines += TextBoundaryLine(
-            boundary_x=int(boundaries[0] // 2),
-            boundary_y=int(boundaries[1] // 2),
-            text=line,
+        if int(boundaries[1]) > max_line_height:
+            max_line_height = int(boundaries[1])
+        text_lines.append(
+            TextBoundaryLine(
+                boundary_x=int(boundaries[0]),
+                boundary_y=int(boundaries[1]),
+                text=line,
+            )
         )
 
     return TextBoundary(
-        origin_coord=(
-            x,
-            y,
-        ),
+        origin_coord=Coord(x=x, y=y),
         text_lines=text_lines,
-        boundary_x=int(boundaries[0] // 2),
-        boundary_y=int(boundaries[1] // 2),
+        boundary_x=int(boundaries[0]),
+        boundary_y=int(boundaries[1]),
+        max_line_height=max_line_height,
     )
 
 

@@ -8,11 +8,11 @@ import shutil
 import requests
 import utils
 import qrcode
-from PIL import Image, ImageFont
+from PIL import Image
 from WeatherData import WeatherData
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
-from models import Text, Quote, QuoteLine
+from models import Text, TextBoundary, TextBoundaryLine, Coord
 
 app = FastAPI()
 logging.basicConfig(level=logging.DEBUG)
@@ -203,42 +203,46 @@ def clean(sleep: bool = True) -> str:
 @app.get("/quote")
 async def get_quote():
     clean(False)
-    resp = requests.get("https://zenquotes.io/api/today")
+    resp: requests.Response = requests.get("https://zenquotes.io/api/today")
     data = resp.json()
-    quote = data[0]["q"]
+    quote = str(data[0]["q"])
     quote = "Time is too slow for those who wait, too swift for those who fear, too long for those who grieve, too short for those who rejoice, but for those who love, time is eternity."
     LOGGER.info(quote)
-    author = "- " + data[0]["a"]
-    font_size = 56
-    author_size = 44
-    quote_font = f"./assets/fonts/{font}"
-    quote_process: Quote = utils.center_text(quote, quote_font, font_size)
+    author = "- " + str(data[0]["a"])
+    font_size: int = 56
+    author_size: int = 44
+    quote_font: str = f"./assets/fonts/{font}"
+    quote_process: TextBoundary = utils.center_text(quote, quote_font, font_size)
     quote_pos = quote_process.origin_coord
-    quote_lines = quote_process.text_lines
-    quote_height = quote_process.boundary_y
+    quote_lines: list[TextBoundaryLine] = quote_process.text_lines
     author_process = utils.center_text(author, quote_font, author_size)
-    author = author_process[1][0]
-    author_pos = author_process[0]
-    author_pos_offset = (author_pos[0] + 172, author_pos[1] + 192)
+    author = author_process.text_lines[0].text
+    author_pos = author_process.origin_coord
+    author_pos_offset = Coord(x=author_pos.x + 172, y=author_pos.y + 192)
     LOGGER.info(quote_lines)
-    x = quote_pos[0]
-    y = quote_pos[1]
-    for quote_line: TextBoundaryLine in quote_lines:
+    x = quote_pos.x
+    y = quote_pos.y
+    for line in quote_lines:
+        LOGGER.info(f"Setting quote line coords: {x, y}")
         try:
             LOGGER.info(line)
             color = "#000000"
             draw = ink.draw(ink.draw_image)
-
             ink.draw_text(
-                (x, y), text=quote_line.text, font=font, size=font_size, color=color, draw=draw
+                (x, y),
+                text=line.text,
+                font=font,
+                size=font_size,
+                color=color,
+                draw=draw,
             )
-            y += quote_height
+            y += quote_process.max_line_height
         except IOError as e:
             print("IO ERROR")
-            return LOGGER.info(e)
+            return LOGGER.error(e)
     try:
         ink.draw_text(
-            author_pos_offset,
+            (author_pos_offset.x, author_pos_offset.y),
             text=author,
             font=font,
             size=author_size,
