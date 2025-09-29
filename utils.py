@@ -25,6 +25,7 @@ def center_text(text: str, font: str, font_size: int) -> TextBoundary:
             max_line_height = int(boundaries[1])
         text_lines.append(
             TextBoundaryLine(
+                center_x=int((800 - boundaries[0]) // 2),
                 boundary_x=int(boundaries[0]),
                 boundary_y=int(boundaries[1]),
                 text=line,

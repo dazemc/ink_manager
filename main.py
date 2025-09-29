@@ -259,6 +259,51 @@ async def get_quote():
     return "Success"
 
 
+@app.get("/random_fact")
+async def random_fact():
+    clean(False)
+    resp: requests.Response = requests.get("https://thefact.space/random")
+    data = resp.json()
+    LOGGER.info(f"/random_fact response: {data}")
+    fact = data["text"]
+    LOGGER.info(f"Building image for random fact: {fact}")
+    font_size: int = 56
+    fact_font: str = f"./assets/fonts/{font}"
+    fact_boundary: TextBoundary = utils.center_text(
+        text=fact, font=fact_font, font_size=font_size
+    )
+    fact_origin_coord = fact_boundary.origin_coord
+    fact_lines = fact_boundary.text_lines
+    for line in fact_lines:
+        LOGGER.info(
+            f"Setting fact line coords: {fact_origin_coord.x, fact_origin_coord.y}"
+        )
+        try:
+            LOGGER.info(line)
+            color = "#000000"
+            draw = ink.draw(ink.draw_image)
+            ink.draw_text(
+                (line.center_x, fact_origin_coord.y),
+                text=line.text,
+                font=font,
+                size=font_size,
+                color=color,
+                draw=draw,
+            )
+            fact_origin_coord.y += fact_boundary.max_line_height
+        except IOError as e:
+            print("IO ERROR")
+            return LOGGER.error(e)
+    try:
+        ink.display_draw(ink.draw_image)
+        ink.sleep()
+
+    except IOError as e:
+        print("IO ERROR")
+        return LOGGER.info(e)
+    return "Success"
+
+
 @app.get("/qr-code/wifi")
 async def generate_wifi_qr():
     clean(False)

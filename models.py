@@ -15,6 +15,7 @@ class Text(BaseModel):
 
 
 class TextBoundaryLine(BaseModel):
+    center_x: int
     boundary_x: int
     boundary_y: int
     text: str
