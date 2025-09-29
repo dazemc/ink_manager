@@ -27,3 +27,4 @@ class TextBoundary(BaseModel):
     boundary_x: int
     boundary_y: int
     max_line_height: int
+    font_size: int

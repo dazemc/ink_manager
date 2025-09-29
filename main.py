@@ -232,7 +232,7 @@ async def get_quote():
                 (x, y),
                 text=line.text,
                 font=font,
-                size=font_size,
+                size=quote_process.font_size,
                 color=color,
                 draw=draw,
             )
@@ -271,11 +271,9 @@ async def random_fact():
     qr_source_img = qrcode.make(fact_source).convert("L")
     qr_source_img = qr_source_img.resize((100, 100), Image.Resampling.LANCZOS)
     qr_coord = Coord(x=ink.width - 110, y=ink.height - 110)
-    font_size: int = 56
+    font_size: int = 56  # this is a 'target' size it will be changed if too large
     fact_font: str = f"./assets/fonts/{font}"
-    fact_boundary: TextBoundary = utils.center_text(
-        text=fact, font=fact_font, font_size=font_size
-    )
+    fact_boundary: TextBoundary = utils.center_text(fact, fact_font, font_size)
     fact_origin_coord = fact_boundary.origin_coord
     fact_lines = fact_boundary.text_lines
     for line in fact_lines:
@@ -290,7 +288,7 @@ async def random_fact():
                 (line.center_x, fact_origin_coord.y),
                 text=line.text,
                 font=font,
-                size=font_size,
+                size=fact_boundary.font_size,
                 color=color,
                 draw=draw,
             )
