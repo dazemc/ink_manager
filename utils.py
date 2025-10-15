@@ -44,8 +44,6 @@ def center_text(text: str, font: str, font_size: int) -> TextBoundary:
             f"Font size {font_size} → lines: {len(text.splitlines())}, width: {bounds[0]}, height: {y_total}, isXConstrained: {isXConstrained}, isYConstrained: {isYConstrained}"
         )
 
-    # contraints = get_constrained_text(text, font, font_size)
-    # text = contraints[0]
     image_font = get_font(font, font_size)
     boundaries = get_boundaries(text, image_font)
     x = int((800 - boundaries[0]) // 2)

@@ -270,7 +270,7 @@ async def random_fact():
     fact_source = data["source"]
     qr_source_img = qrcode.make(fact_source).convert("L")
     qr_source_img = qr_source_img.resize((100, 100), Image.Resampling.LANCZOS)
-    qr_coord = Coord(x=ink.width - 110, y=ink.height - 110)
+    qr_coord = Coord(x=ink.width - 100, y=ink.height - 100)
     font_size: int = 56  # this is a 'target' size it will be changed if too large
     fact_font: str = f"./assets/fonts/{font}"
     fact_boundary: TextBoundary = utils.center_text(fact, fact_font, font_size)
