@@ -2,7 +2,7 @@ import time
 import os
 import subprocess
 import json
-from lib import ink_display as ink
+from lib import ink_display
 import logging.config
 import shutil
 import requests
@@ -16,7 +16,7 @@ from models import Text, TextBoundary, TextBoundaryLine, Coord
 
 app = FastAPI()
 logging.basicConfig(level=logging.DEBUG)
-ink = ink.InkDisplay()
+ink = ink_display.InkDisplay()
 cwd = os.getcwd()
 image = "assets/images/test/raspilogo.bmp"
 font = "Inktype.ttf"
@@ -101,7 +101,7 @@ def test() -> str:
 
 
 @app.post("/text")
-async def display_text(contents: Text) -> str:
+async def display_text(contents: Text) -> str | None:
     """Creates text on an image to render, uses hex color values.
 
     Returns:
@@ -168,9 +168,12 @@ async def display_upload_image(file: UploadFile = File(...)):
     file_loc = f"{upload_dir}/{file.filename}"
     with open(file_loc, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
-    image_bmp = file.filename.split(".")[0] + ".bmp"
-    ink.convert_24bmp(file_loc, f"{upload_dir}/{image_bmp}")
-    ink.display_image(f"uploads/{image_bmp}")
+    if file.filename is not None:
+        image_bmp = file.filename.split(".")[0] + ".bmp"
+        ink.convert_24bmp(file_loc, f"{upload_dir}/{image_bmp}")
+        ink.display_image(f"uploads/{image_bmp}")
+    else:
+        LOGGER.error("Display image was unable to load locally")
     if DEBUG:
         LOGGER.info("Displaying image from POST: %s", file.filename)
     ink.sleep()
@@ -222,12 +225,12 @@ async def get_quote():
     LOGGER.info(quote_lines)
     x = quote_pos.x
     y = quote_pos.y
+    color = "#000000"
+    draw = ink.draw(ink.draw_image)
     for line in quote_lines:
         LOGGER.info(f"Setting quote line coords: {x, y}")
         try:
             LOGGER.info(line)
-            color = "#000000"
-            draw = ink.draw(ink.draw_image)
             ink.draw_text(
                 (x, y),
                 text=line.text,
@@ -249,10 +252,8 @@ async def get_quote():
             color=color,
             draw=draw,
         )
-
         ink.display_draw(ink.draw_image)
         ink.sleep()
-
     except IOError as e:
         print("IO ERROR")
         return LOGGER.info(e)

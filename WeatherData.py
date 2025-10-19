@@ -11,6 +11,7 @@ import json
 import requests
 from PIL import Image, ImageDraw, ImageFont
 from dotenv import load_dotenv
+from typing import final
 
 # Test/Debug
 DEBUG = False
@@ -48,6 +49,7 @@ if DEBUG:
     setup_logging()
 
 
+@final
 class WeatherData:
     def __init__(self) -> None:
         self.zip = "98022"
@@ -59,12 +61,14 @@ class WeatherData:
         self.unit = "standard"
         self.bg = "light/"
         self.daymode = True
-        self.response = {}
+        self.response: dict[str, object] = {}
         self.icons = {}
         self.sunset = ""
         self.sunrise = ""
 
-    def get_icons(self, icon_dir: str, background: str, daymode: bool) -> dict:
+    def get_icons(
+        self, icon_dir: str, background: str, daymode: bool
+    ) -> dict[str, str]:
         if daymode is True:
             daytime = "DAY"
         else:
@@ -107,7 +111,7 @@ class WeatherData:
             # TODO: thunderstorm
         }
 
-    def text_size(self, text) -> tuple:
+    def text_size(self, text) -> int | None:
         """Creates a boundary box to determine width and height of text
 
         Args:
@@ -119,8 +123,9 @@ class WeatherData:
         canvas = Image.new("RGB", (400, 100))
         draw = ImageDraw.Draw(canvas)
         draw.text((10, 10), text, font=FONT_HEADER, fill="white")
-        bbox = canvas.getbbox()
-        return (bbox[2] - bbox[0], bbox[3] - bbox[1])
+        bbox: tuple[int, int, int, int] | None = canvas.getbbox()
+        if bbox is not None:
+            return bbox[2] - bbox[0]
 
     def create_forecast(self) -> None:
         # need to break this up
@@ -162,7 +167,10 @@ class WeatherData:
             icon_image = Image.open(condition).convert("RGBA")
             w, h = icon_image.size
             # used to set origin as center bottom
-            text_w = self.text_size(day_name)[0]
+            text_w = self.text_size(day_name)
+            if text_w is None:
+                LOGGER.error("text does not have a size, this shouldn't happen!")
+                return
             h_offset = int(CENTER_HEIGHT - h / 2)
             forecast_image.paste(icon_image, (pos, h_offset), mask=icon_image)
             draw = ImageDraw.Draw(forecast_image)
@@ -197,14 +205,14 @@ class WeatherData:
                 os.remove(save_dir)
             forecast_image.save(save_dir)
 
-    def get_coord(self) -> tuple:
+    def get_coord(self) -> tuple[int | float, int | float]:
         url = f"""http://api.openweathermap.org/geo/1.0/direct?q={self.city_name},{
             self.state_code
         },{self.cc}&appid={self.api}"""
         resp = requests.get(url, timeout=60)
         return (resp.json()[0]["lat"], resp.json()[0]["lon"])
 
-    def get_weather(self, coord) -> dict:
+    def get_weather(self, coord: tuple[int | float, int | float]) -> dict[str, object]:
         lat = coord[0]
         lon = coord[1]
         url = f"""https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={
@@ -213,7 +221,7 @@ class WeatherData:
         resp = requests.get(url, timeout=60)
         return resp.json()["daily"]
 
-    def parse_response(self, response) -> dict:
+    def parse_response(self, response) -> dict[str, object] | None:
         for i in range(8):
             response[i]["weekday"] = datetime.fromtimestamp(
                 int(response[i]["dt"])
