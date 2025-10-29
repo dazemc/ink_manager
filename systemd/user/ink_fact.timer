@@ -4,7 +4,7 @@ Description=Timer for ink display random fact on the :15 and :45 mark
 [Timer]
 OnCalendar=*:15
 OnCalendar=*:45
-Persistent=true
+Persistent=false
 
 [Install]
 WantedBy=timers.target
