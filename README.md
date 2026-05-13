@@ -33,6 +33,13 @@ This project provides a **FastAPI** server to interact with an e-ink display, en
      ```
    - Obtain a free API key from [OpenWeatherMap](https://openweathermap.org/).
 
+4. **Enable SPI**
+   ```bash
+   sudo rasp-config
+   ```
+   Interface Options:
+      - SPI and enable
+
 5. **Run the Server**:
    ```bash
    ./start.sh
