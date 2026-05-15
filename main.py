@@ -8,11 +8,13 @@ import shutil
 import requests
 import utils
 import qrcode
+import random
 from PIL import Image
 from WeatherData import WeatherData
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 from models import Text, TextBoundary, TextBoundaryLine, Coord
+from pathlib import Path
 
 app = FastAPI()
 logging.basicConfig(level=logging.DEBUG)
@@ -181,6 +183,22 @@ async def display_upload_image(file: UploadFile = File(...)):
     return JSONResponse(
         content={"filename": file.filename, "message": "File uploaded and displaying"}
     )
+
+
+@app.get("/random_image")
+def random_image():
+    clean(False)
+    seed = ""
+    rnd_num: str = str(random.randrange(10000, 99999))
+    for num in list(rnd_num):
+        seed += chr(ord("@") + int(num))
+    resp: requests.Response = requests.get(f"https://picsum.photos/seed/{seed}/800/480")
+    filetype = resp.headers.get("Content-Type", "").split("/")[1]
+    filename = f"./assets/images/random_image.{filetype}"
+    Path(filename).write_bytes(resp.content)
+    ink.display_image(cwd + f"/assets/images/random_image.{filetype}")
+    ink.sleep()
+    return "Success"
 
 
 @app.get("/update_weather")
