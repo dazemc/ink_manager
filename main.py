@@ -263,7 +263,9 @@ async def get_quote():
 @app.get("/random_fact")
 async def random_fact():
     clean(False)
-    resp: requests.Response = requests.get("https://thefact.space/random")
+    resp: requests.Response = requests.get(
+        "https://uselessfacts.jsph.pl/api/v2/facts/random"
+    )
     data = resp.json()
     LOGGER.info(f"/random_fact response: {data}")
     fact = data["text"]
