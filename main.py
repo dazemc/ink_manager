@@ -22,7 +22,7 @@ ink = ink_display.InkDisplay()
 cwd = os.getcwd()
 image = "assets/images/test/raspilogo.bmp"
 font = "Inktype.ttf"
-upload_dir = "./assets/images/uploads"
+upload_dir = "{cwd}/assets/images/uploads"
 os.makedirs(upload_dir, exist_ok=True)
 wd = WeatherData()
 

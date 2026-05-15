@@ -11,6 +11,12 @@ function runUser {
   cp -rL "$SCRIPT_DIR"/../systemd/user/* ~/.config/systemd/user/
 }
 
+function getDependencies() {
+  apt install avahi-daemon avahi-utils
+  cp ./avahi/dazeink.service /etc/avahi/services/dazeink.service
+  systemctl enable --now avahi-daemon
+}
+
 function runRoot() {
   local SCRIPT_DIR
   SCRIPT_DIR=$1
@@ -26,14 +32,16 @@ function runRoot() {
   cp -rL "$SCRIPT_DIR"/../* /opt/ink_manager/
   cp -L "$SCRIPT_DIR"/../.env /opt/ink_manager/.env
   cp -rL "$SCRIPT_DIR"/../systemd/system/ink.service /etc/systemd/system/ink.service
+  cp -rL "$SCRIPT_DIR"/../avahi/ /opt/ink_manager/
   cd -L /opt/ink_manager/
   "$HOME"/.local/bin/uv sync
   systemctl daemon-reload
 }
 
+
 function main {
   runUser
-  sudo bash -c "$(declare -f runRoot); runRoot $SCRIPT_DIR"
+  sudo bash -c "$(declare -f runRoot getDependencies); runRoot $SCRIPT_DIR; getDependencies"
 }
 
 main
