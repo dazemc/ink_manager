@@ -194,9 +194,9 @@ def random_image():
         seed += chr(ord("@") + int(num))
     resp: requests.Response = requests.get(f"https://picsum.photos/seed/{seed}/800/480")
     filetype = resp.headers.get("Content-Type", "").split("/")[1]
-    filename = f"./assets/images/random_image.{filetype}"
+    filename = f"{cwd}/assets/images/random_image.{filetype}"
     Path(filename).write_bytes(resp.content)
-    ink.display_image(cwd + f"/assets/images/random_image.{filetype}")
+    ink.display_image(f"{cwd}/assets/images/random_image.{filetype}")
     ink.sleep()
     return "Success"
 
